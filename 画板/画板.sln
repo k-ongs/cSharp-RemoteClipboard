@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "画板", "画板\画板.csproj", "{67595B55-5860-4D30-B25F-A2E0FC2AF80A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoScreenShot", "DemoScreenShot\DemoScreenShot.csproj", "{F3CDA7C5-7048-4040-92A5-1973E5D8ED8C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67595B55-5860-4D30-B25F-A2E0FC2AF80A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67595B55-5860-4D30-B25F-A2E0FC2AF80A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67595B55-5860-4D30-B25F-A2E0FC2AF80A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67595B55-5860-4D30-B25F-A2E0FC2AF80A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3CDA7C5-7048-4040-92A5-1973E5D8ED8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3CDA7C5-7048-4040-92A5-1973E5D8ED8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3CDA7C5-7048-4040-92A5-1973E5D8ED8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3CDA7C5-7048-4040-92A5-1973E5D8ED8C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {691BA869-8DB0-4B28-B9D0-C0978F94448A}
+	EndGlobalSection
+EndGlobal

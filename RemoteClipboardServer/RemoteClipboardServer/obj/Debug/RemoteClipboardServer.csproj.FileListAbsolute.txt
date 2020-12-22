@@ -1,0 +1,11 @@
+C:\Users\16243\Desktop\c#大作业\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.ControlBar.resources
+C:\Users\16243\Desktop\c#大作业\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.Properties.Resources.resources
+C:\Users\16243\Desktop\c#大作业\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.csproj.GenerateResource.cache
+C:\Users\16243\Desktop\c#大作业\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.csproj.CoreCompileInputs.cache
+C:\Users\16243\Desktop\c#大作业\RemoteClipboardServer\RemoteClipboardServer\bin\Debug\RemoteClipboardServer.exe.config
+C:\Users\16243\Desktop\c#大作业\RemoteClipboardServer\RemoteClipboardServer\bin\Debug\RemoteClipboardServer.exe
+C:\Users\16243\Desktop\c#大作业\RemoteClipboardServer\RemoteClipboardServer\bin\Debug\RemoteClipboardServer.pdb
+C:\Users\16243\Desktop\c#大作业\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.FormMain.resources
+C:\Users\16243\Desktop\c#大作业\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.exe
+C:\Users\16243\Desktop\c#大作业\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.pdb
+C:\Users\16243\Desktop\c#大作业\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.ControlProgressBar.resources
