@@ -17,6 +17,31 @@ namespace RemoteClipboardServer
 {
     public partial class FormMain : Form
     {
+        private int totalNumberOfUsers = 0;
+        private ClassSqlServer sqlServer = new ClassSqlServer();
+        private ClassTcpServer tcpServer = new ClassTcpServer("0.0.0.0", 6010);
+
+        /// <summary>
+        /// 获取有关系统物理和虚拟内存的信息。 参考至https://docs.microsoft.com/zh-cn/previous-versions/aa908760(v=msdn.10)
+        /// </summary>
+        /// <param name="meminfo">指向MEMORYSTATUS结构的指针</param>
+        [DllImport("kernel32")]
+        public static extern void GlobalMemoryStatus(ref MEMORYSTATUS meminfo);
+        /// <summary>
+        /// 此结构包含有关当前内存可用性的信息。参考至https://docs.microsoft.com/zh-cn/previous-versions/bb202730(v=msdn.10)
+        /// </summary>
+        public struct MEMORYSTATUS
+        {
+            public uint dwLength;
+            public uint dwMemoryLoad; // 使用占用率，是一个介于0到100之间的数字。
+            public uint dwTotalPhys;
+            public uint dwAvailPhys;
+            public uint dwTotalPageFile;
+            public uint dwAvailPageFile;
+            public uint dwTotalVirtual;
+            public uint dwAvailVirtual;
+        }
+
         #region 绘制窗体阴影
         [DllImport("dwmapi.dll")]
         public static extern int DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMarInset);
@@ -96,29 +121,110 @@ namespace RemoteClipboardServer
         public FormMain()
         {
             InitializeComponent();
-            timer1.Start();
+            tcpServer.OnClientCloseHandler += OnClientCloseHandler;
+            tcpServer.OnClientReceiveHandler += OnClientReceiveHandler;
         }
-
-        PerformanceCounter cpuUsage = new PerformanceCounter("Process", "% Processor Time", "RemoteClipboardServer");
-
-        private void timer1_Tick(object sender, EventArgs e)
+        /// <summary>
+        /// 窗体启动后初始化参数
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FormMain_Load(object sender, EventArgs e)
         {
-            Process[] process = Process.GetProcessesByName("RemoteClipboardServer");
-            foreach (Process pres in process)
-            {
-                label2.Text = "";
-                StringBuilder sb = new StringBuilder();
-                sb.Append("内存占用：");
-                sb.Append(pres.WorkingSet64 / 1024 / 1024);
-                sb.Append("M CPU:");
-                sb.Append((int)(cpuUsage.NextValue() / Environment.ProcessorCount));
-                sb.Append("%");
+            timer1.Start();
 
-                textBox1.Text = sb.ToString();
+            /// 获取用户数量
+            DataTable dataTable = sqlServer.Field("count(*)").Select("userInfo");
+            if(dataTable.Rows.Count > 0)
+            {
+                totalNumberOfUsers = Convert.ToInt32(dataTable.Rows[0][0]);
+                controlProgressBar1.Progress = totalNumberOfUsers;
             }
         }
+        /// <summary>
+        /// 每隔一秒刷新数据显示
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            /// 获取内存使用率
+            MEMORYSTATUS MemInfo = new MEMORYSTATUS();
+            GlobalMemoryStatus(ref MemInfo);
+            int dwMemoryLoad = Convert.ToInt32(MemInfo.dwMemoryLoad);
+            if(dwMemoryLoad != controlProgressBar4.Progress)
+            {
+                controlProgressBar4.Progress = Convert.ToInt32(MemInfo.dwMemoryLoad);
+            }
+        }
+        /// <summary>
+        /// 开启服务按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if(tcpServer.Start())
+            {
+                button2.Cursor = Cursors.Hand;
+                button2.ForeColor = Color.White;
+                button2.BackColor = Color.FromArgb(31, 148, 247);
 
+                button1.Cursor = Cursors.Default;
+                button1.ForeColor = Color.Black;
+                button1.BackColor = Color.Gainsboro;
 
-        //PerformanceCounter
+                button2.Enabled = true;
+                button1.Enabled = false;
+                textBox1.Text = "[系统] 启动服务成功" + Environment.NewLine + textBox1.Text;
+            }
+            else
+            {
+                textBox1.Text = "[错误] 启动服务错误，请检查端口是否被占用！" + Environment.NewLine + textBox1.Text;
+            }
+        }
+        /// <summary>
+        /// 关闭服务按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button2_Click(object sender, EventArgs e)
+        {
+            tcpServer.Stop();
+            button1.Cursor = Cursors.Hand;
+            button1.ForeColor = Color.White;
+            button1.BackColor = Color.FromArgb(31, 148, 247);
+
+            button2.Cursor = Cursors.Default;
+            button2.ForeColor = Color.Black;
+            button2.BackColor = Color.Gainsboro;
+
+            button1.Enabled = true;
+            button2.Enabled = false;
+
+            textBox1.Text = "[系统] 关闭服务成功" + Environment.NewLine + textBox1.Text;
+        }
+        /// <summary>
+        /// 接收客户端消息并处理
+        /// </summary>
+        /// <param name="endPoint">来源</param>
+        /// <param name="state">标识码</param>
+        /// <param name="data">数据</param>
+        private void OnClientReceiveHandler(string endPoint, byte state, byte[] data)
+        {
+            switch(state)
+            {
+                case 100:
+                    break;
+            }
+        }
+        /// <summary>
+        /// 客户端断开连接事件
+        /// </summary>
+        /// <param name="endPoint"></param>
+        private void OnClientCloseHandler(string endPoint)
+        {
+
+        }
     }
 }
