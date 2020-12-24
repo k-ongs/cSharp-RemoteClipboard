@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Net;
 using System.Linq;
-using System.Text;
-using System.Net.Sockets;
-using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Net.Sockets;
+using System.Collections.Generic;
 
 namespace TCP服务端
 {
@@ -14,26 +11,20 @@ namespace TCP服务端
         private bool isListening = true;
         private Socket socketServer = null;
         private IPEndPoint iPEndPoint = null;
-        private Thread processAcceptThread = null;
+        private Dictionary<string, Socket> socketClientList = null;
 
-        /*
-        public delegate void OnConnectedHandler();
-        public event OnConnectedHandler OnConnected;
-        public event OnConnectedHandler OnFaildConnect;
-        public delegate void OnReceiveMsgHandler();
-        public event OnReceiveMsgHandler OnReceiveMsg;
-        */
+        // 客户端信息处理
+        public delegate void onClientReceiveHandler(string endPoint, byte state, byte[] data);
+        public event onClientReceiveHandler OnClientReceiveHandler;
 
-        // 存储客户端地址
-
-        private static Dictionary<string, Socket> clientItems = new Dictionary<string, Socket> { };
-
+        // 客户端断开连接
+        public delegate void onClientCloseHandler(string endPoint);
+        public event onClientCloseHandler OnClientCloseHandler;
 
         public ClassTcpServer(string host, int port)
         {
-            processAcceptThread = new Thread(ProcessAccept);
-            processAcceptThread.IsBackground = true;
             iPEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
+            socketClientList = new Dictionary<string, Socket>();
             socketServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
@@ -44,10 +35,12 @@ namespace TCP服务端
         {
             try
             {
-                // 绑定端口
+                isListening = true;
                 socketServer.Bind(iPEndPoint);
                 socketServer.Listen(0);
-                isListening = true;
+
+                Thread processAcceptThread = new Thread(ProcessAccept);
+                processAcceptThread.IsBackground = true;
                 processAcceptThread.Start();
             }
             catch
@@ -57,45 +50,86 @@ namespace TCP服务端
             return true;
         }
 
+        public void Stop()
+        {
+            isListening = false;
+            foreach (Socket client in socketClientList.Values)
+            {
+                client.Close();
+            }
+        }
+
         public void ProcessAccept()
         {
             Socket connection = null;
             while (isListening && socketServer.IsBound)
             {
-                try
+                connection = socketServer.Accept();
+                if (connection != null)
                 {
-                    connection = socketServer.Accept();
+                    socketClientList.Add(connection.RemoteEndPoint.ToString(), connection);
+                    Thread socketConnectedThread = new Thread(SocketClientReceive);
+                    socketConnectedThread.IsBackground = true;
+                    socketConnectedThread.Start(connection);
                 }
-                catch{}
-
-                // 获取客户端的IP和端口号
-                IPAddress clientIP = (connection.RemoteEndPoint as IPEndPoint).Address;
-                int clientPort = (connection.RemoteEndPoint as IPEndPoint).Port;
-
-                string remoteEndPoint = connection.RemoteEndPoint.ToString();
-
-                string sendmsg = "连接服务端成功！\r\n" + "本地IP:" + clientIP + "，本地端口" + clientPort.ToString();
             }
         }
 
-        static void Receive(Socket socket)
+        public void SocketClientReceive(object obj)
         {
-            byte[] bytes = new byte[1024];
-            //从客户端接收消息
-            int len = socket.Receive(bytes, bytes.Length, 0);
-            //将消息转为字符串
-            string recvStr = Encoding.ASCII.GetString(bytes, 0, len);
-            Console.WriteLine("接收的客户端消息 ： {0}", recvStr);
+            Socket connection = obj as Socket;
+            while (isListening && connection.Connected)
+            {
+                try
+                {
+                    byte[] data = new byte[1024];
+                    int length = connection.Receive(data, data.Length, 0);
+
+
+                    while (connection.Available > 0)
+                    {
+                        Thread.Sleep(100);
+                        byte[] temp = new byte[1024];
+                        int len = connection.Receive(temp, temp.Length, 0);
+                        if (len > 0)
+                        {
+                            byte[] dataTemp = new byte[length + len];
+                            data.CopyTo(dataTemp, 0);
+                            temp.Take(len).ToArray().CopyTo(dataTemp, length);
+                            length += len;
+                            data = dataTemp;
+                        }
+                    }
+
+                    if (length > 1)
+                    {
+                        // 获取标识码
+                        byte state = data[length - 1];
+                        // 截取数据
+                        data = data.Take(length - 1).ToArray();
+                        // 执行客户端信息响应事件
+                        OnClientReceiveHandler?.Invoke(connection.RemoteEndPoint.ToString(), state, data);
+                    }
+                }
+                catch
+                {
+                    OnClientCloseHandler?.Invoke(connection.RemoteEndPoint.ToString());
+                    return;
+                }
+
+                Thread.Sleep(100);
+            }
         }
 
-        static void Send(Socket socket)
+        public void SocketClientSend(string endPoint, byte state, byte[] data)
         {
-            string sendStr = "www.what21.com, What21ServerSocket, Client send message successful！";
-            Console.WriteLine("发送给客户端消息 ： {0}", sendStr);
-            // 将字符串消息转为数组
-            byte[] bytes = Encoding.ASCII.GetBytes(sendStr);
-            //发送消息给客户端
-            socket.Send(bytes, bytes.Length, 0);
+            if (socketClientList.Keys.Contains(endPoint) && socketClientList[endPoint] != null)
+            {
+                data = data.Append(state).ToArray();
+                socketClientList[endPoint].Send(data);
+            }
         }
+
+
     }
 }

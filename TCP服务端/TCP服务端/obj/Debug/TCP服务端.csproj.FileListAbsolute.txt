@@ -1,0 +1,10 @@
+C:\Users\16243\Desktop\c#大作业\TCP服务端\TCP服务端\bin\Debug\TCP服务端.exe.config
+C:\Users\16243\Desktop\c#大作业\TCP服务端\TCP服务端\bin\Debug\TCP服务端.exe
+C:\Users\16243\Desktop\c#大作业\TCP服务端\TCP服务端\bin\Debug\TCP服务端.pdb
+C:\Users\16243\Desktop\c#大作业\TCP服务端\TCP服务端\obj\Debug\TCP服务端.csprojAssemblyReference.cache
+C:\Users\16243\Desktop\c#大作业\TCP服务端\TCP服务端\obj\Debug\TCP服务端.Form1.resources
+C:\Users\16243\Desktop\c#大作业\TCP服务端\TCP服务端\obj\Debug\TCP服务端.Properties.Resources.resources
+C:\Users\16243\Desktop\c#大作业\TCP服务端\TCP服务端\obj\Debug\TCP服务端.csproj.GenerateResource.cache
+C:\Users\16243\Desktop\c#大作业\TCP服务端\TCP服务端\obj\Debug\TCP服务端.csproj.CoreCompileInputs.cache
+C:\Users\16243\Desktop\c#大作业\TCP服务端\TCP服务端\obj\Debug\TCP服务端.exe
+C:\Users\16243\Desktop\c#大作业\TCP服务端\TCP服务端\obj\Debug\TCP服务端.pdb

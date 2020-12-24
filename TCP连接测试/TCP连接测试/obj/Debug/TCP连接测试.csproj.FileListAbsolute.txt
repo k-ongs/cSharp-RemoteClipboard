@@ -1,0 +1,10 @@
+C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\bin\Debug\TCP连接测试.exe.config
+C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\bin\Debug\TCP连接测试.exe
+C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\bin\Debug\TCP连接测试.pdb
+C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.csprojAssemblyReference.cache
+C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.Form1.resources
+C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.Properties.Resources.resources
+C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.csproj.GenerateResource.cache
+C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.csproj.CoreCompileInputs.cache
+C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.exe
+C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.pdb
