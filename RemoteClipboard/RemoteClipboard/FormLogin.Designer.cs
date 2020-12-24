@@ -30,114 +30,65 @@ namespace RemoteClipboard
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogin));
-            this.label1 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.portraitBox1 = new RemoteClipboard.ControlPortraitBox();
+            this.labelTips = new System.Windows.Forms.Label();
+            this.labelScan = new System.Windows.Forms.Label();
+            this.labelPass = new System.Windows.Forms.Label();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.controlBar1 = new RemoteClipboard.ControlBar();
-            this.toolTipPasswd = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.toolTipPasswd.SuspendLayout();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
+            // labelTips
             // 
-            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(158)))), ((int)(((byte)(247)))));
-            this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label1.Font = new System.Drawing.Font("微软雅黑", 11F);
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(31, 333);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(260, 35);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "确  定";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.labelTips.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.labelTips.Font = new System.Drawing.Font("微软雅黑", 11F);
+            this.labelTips.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.labelTips.Location = new System.Drawing.Point(30, 45);
+            this.labelTips.Margin = new System.Windows.Forms.Padding(0);
+            this.labelTips.Name = "labelTips";
+            this.labelTips.Padding = new System.Windows.Forms.Padding(6, 0, 0, 0);
+            this.labelTips.Size = new System.Drawing.Size(260, 40);
+            this.labelTips.TabIndex = 9;
+            this.labelTips.Text = "您的网络异常，请先检查网络。";
+            this.labelTips.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labelTips.Visible = false;
             // 
-            // checkBox1
+            // labelScan
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox1.ForeColor = System.Drawing.Color.DarkGray;
-            this.checkBox1.Location = new System.Drawing.Point(35, 285);
-            this.checkBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(72, 21);
-            this.checkBox1.TabIndex = 3;
-            this.checkBox1.Text = "记住密码";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.labelScan.Font = new System.Drawing.Font("微软雅黑", 11F);
+            this.labelScan.Location = new System.Drawing.Point(0, 0);
+            this.labelScan.Margin = new System.Windows.Forms.Padding(0);
+            this.labelScan.Name = "labelScan";
+            this.labelScan.Size = new System.Drawing.Size(130, 30);
+            this.labelScan.TabIndex = 11;
+            this.labelScan.Text = "扫码登录";
+            this.labelScan.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelScan.Click += new System.EventHandler(this.labelSwitch_Click);
+            this.labelScan.Paint += new System.Windows.Forms.PaintEventHandler(this.labelSwitch_Paint);
             // 
-            // label2
+            // labelPass
             // 
-            this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.label2.Location = new System.Drawing.Point(31, 274);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(260, 2);
-            this.label2.TabIndex = 5;
+            this.labelPass.Font = new System.Drawing.Font("微软雅黑", 11F);
+            this.labelPass.Location = new System.Drawing.Point(130, 0);
+            this.labelPass.Margin = new System.Windows.Forms.Padding(0);
+            this.labelPass.Name = "labelPass";
+            this.labelPass.Size = new System.Drawing.Size(130, 30);
+            this.labelPass.TabIndex = 12;
+            this.labelPass.Text = "密码登录";
+            this.labelPass.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelPass.Click += new System.EventHandler(this.labelSwitch_Click);
+            this.labelPass.Paint += new System.Windows.Forms.PaintEventHandler(this.labelSwitch_Paint);
             // 
-            // label3
+            // flowLayoutPanel1
             // 
-            this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.label3.Location = new System.Drawing.Point(77, 252);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(2, 20);
-            this.label3.TabIndex = 6;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("微软雅黑", 10F, System.Drawing.FontStyle.Bold);
-            this.label4.Location = new System.Drawing.Point(37, 251);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(37, 19);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "密码";
-            // 
-            // textBox1
-            // 
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Font = new System.Drawing.Font("微软雅黑", 10F);
-            this.textBox1.ForeColor = System.Drawing.Color.LightGray;
-            this.textBox1.Location = new System.Drawing.Point(85, 252);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(206, 18);
-            this.textBox1.TabIndex = 10;
-            this.textBox1.Text = "请输入密码";
-            this.textBox1.Click += new System.EventHandler(this.textBox1_Click);
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            this.textBox1.Enter += new System.EventHandler(this.textBox1_Enter);
-            this.textBox1.Leave += new System.EventHandler(this.textBox1_Leave);
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBox2.ForeColor = System.Drawing.Color.DarkGray;
-            this.checkBox2.Location = new System.Drawing.Point(144, 285);
-            this.checkBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(72, 21);
-            this.checkBox2.TabIndex = 4;
-            this.checkBox2.Text = "请勿打扰";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
-            // 
-            // portraitBox1
-            // 
-            this.portraitBox1.BackColor = System.Drawing.Color.Transparent;
-            this.portraitBox1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.portraitBox1.Location = new System.Drawing.Point(106, 94);
-            this.portraitBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.portraitBox1.Name = "portraitBox1";
-            this.portraitBox1.Portrait = 0;
-            this.portraitBox1.ReplaceImage = true;
-            this.portraitBox1.Size = new System.Drawing.Size(110, 110);
-            this.portraitBox1.TabIndex = 9;
+            this.flowLayoutPanel1.Controls.Add(this.labelScan);
+            this.flowLayoutPanel1.Controls.Add(this.labelPass);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(30, 55);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(260, 30);
+            this.flowLayoutPanel1.TabIndex = 13;
             // 
             // controlBar1
             // 
@@ -150,77 +101,51 @@ namespace RemoteClipboard
             this.controlBar1.Location = new System.Drawing.Point(0, 0);
             this.controlBar1.Margin = new System.Windows.Forms.Padding(0);
             this.controlBar1.Name = "controlBar1";
-            this.controlBar1.Size = new System.Drawing.Size(322, 35);
+            this.controlBar1.Size = new System.Drawing.Size(320, 35);
             this.controlBar1.TabIndex = 8;
             this.controlBar1.Title = "远程剪贴板";
             // 
-            // toolTipPasswd
+            // panel1
             // 
-            this.toolTipPasswd.BackgroundImage = global::RemoteClipboard.Properties.Resources.toolTip;
-            this.toolTipPasswd.Controls.Add(this.label5);
-            this.toolTipPasswd.Location = new System.Drawing.Point(76, 216);
-            this.toolTipPasswd.MaximumSize = new System.Drawing.Size(160, 33);
-            this.toolTipPasswd.MinimumSize = new System.Drawing.Size(160, 33);
-            this.toolTipPasswd.Name = "toolTipPasswd";
-            this.toolTipPasswd.Size = new System.Drawing.Size(160, 33);
-            this.toolTipPasswd.TabIndex = 12;
-            this.toolTipPasswd.Visible = false;
-            // 
-            // label5
-            // 
-            this.label5.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.label5.ForeColor = System.Drawing.Color.DarkGray;
-            this.label5.Location = new System.Drawing.Point(3, 1);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(135, 23);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "密码长度必须超过6位！";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.panel1.Location = new System.Drawing.Point(30, 85);
+            this.panel1.Margin = new System.Windows.Forms.Padding(0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(260, 330);
+            this.panel1.TabIndex = 14;
             // 
             // FormLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(322, 400);
-            this.Controls.Add(this.toolTipPasswd);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.portraitBox1);
+            this.ClientSize = new System.Drawing.Size(320, 440);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.labelTips);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.controlBar1);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.label4);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(322, 400);
-            this.MinimumSize = new System.Drawing.Size(322, 400);
+            this.MaximumSize = new System.Drawing.Size(320, 440);
+            this.MinimumSize = new System.Drawing.Size(320, 440);
             this.Name = "FormLogin";
-            this.Text = "远程剪贴板";
+            this.Text = " ";
             this.Load += new System.EventHandler(this.LoginForm_Load);
-            this.toolTipPasswd.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
         private ControlBar controlBar1;
-        private ControlPortraitBox portraitBox1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.Panel toolTipPasswd;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label labelTips;
+        private System.Windows.Forms.Label labelScan;
+        private System.Windows.Forms.Label labelPass;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 

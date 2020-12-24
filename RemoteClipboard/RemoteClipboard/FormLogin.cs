@@ -96,108 +96,39 @@ namespace RemoteClipboard
             this.StartPosition = FormStartPosition.CenterScreen;
         }
 
-        private void textBox1_Enter(object sender, EventArgs e)
-        {
-            if(textBox1.Text == "请输入密码")
-            {
-                textBox1.Text = "";
-                textBox1.ForeColor = Color.Black;
-            }
-        }
-
-        private void textBox1_Leave(object sender, EventArgs e)
-        {
-            if(textBox1.Text == "")
-            {
-                textBox1.Text = "请输入密码";
-                textBox1.ForeColor = Color.LightGray;
-            }
-        }
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            if (textBox1.Text != "" && textBox1.Text != "请输入密码")
-            {
-                toolTipPasswd.Visible = false;
-                textBox1.ForeColor = Color.Black;
-            }
-            else
-            {
-                textBox1.ForeColor = Color.LightGray;
-            }
-        }
-        private void textBox1_Click(object sender, EventArgs e)
-        {
-            toolTipPasswd.Visible = false;
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-           if(!checkBox1.Checked)
-            {
-                checkBox2.Checked = false;
-            }
-        }
-
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox2.Checked)
-            {
-                checkBox1.Checked = true;
-            }
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-            string password = textBox1.Text;
-            if(password.Length < 6)
-            {
-                toolTipPasswd.Visible = true;
-                return;
-            }
-
-            ClassStaticResources.password = textBox1.Text;
-            string savePassword = checkBox1.Checked ? "true" : "false";
-            string notDisturb = checkBox2.Checked ? "true" : "false";
-
-            ClassStaticResources.SetConfig("password", textBox1.Text);
-            ClassStaticResources.SetConfig("savePassword", savePassword);
-            ClassStaticResources.SetConfig("notDisturb", notDisturb);
-
-            ClassStaticResources.doNotDisturb = checkBox2.Checked;
-
-            this.Close();
-        }
-
         private void LoginForm_Load(object sender, EventArgs e)
         {
-            string pid = ClassStaticResources.GetConfig("portrait");
-            string password = ClassStaticResources.GetConfig("password");
-            string savePassword = ClassStaticResources.GetConfig("savePassword");
-            string notDisturb = ClassStaticResources.GetConfig("notDisturb");
+            labelSwitch_Click(labelPass, null);
+        }
 
-            ClassStaticResources.portraitPid = (pid == "") ? 0 : Convert.ToInt32(pid);
+        private void labelSwitch_Paint(object sender, PaintEventArgs e)
+        {
+            Label that = sender as Label;
+            Graphics graphics = e == null ? that.CreateGraphics() : e.Graphics;
+            Pen pen = that.Tag == null ? new Pen(Color.FromArgb(240, 240, 240)) : new Pen(Color.FromArgb(31, 148, 247));
+            graphics.DrawLine(pen, 0, that.Height - 1, that.Width, that.Height - 1);
+            if(e == null) graphics.Dispose();
+        }
 
-            portraitBox1.Portrait = ClassStaticResources.portraitPid;
-            if (password.Length < 6)
+        private void labelSwitch_Click(object sender, EventArgs e)
+        {
+            Label that = sender as Label;
+            if (that.Tag == null)
             {
-                savePassword = "false";
-                notDisturb = "false";
-            }
-            else
-            {
-                textBox1.Text = password;
-            }
-
-            if(savePassword == "true")
-            {
-                checkBox1.Checked = true;
-            }
-
-            if (notDisturb == "true")
-            {
-                checkBox2.Checked = true;
+                that.Tag = true;
+                if (that == labelScan)
+                {
+                    labelPass.Tag = null;
+                }
+                else
+                {
+                    labelScan.Tag = null;
+                }
+                labelSwitch_Paint(labelPass, null);
+                labelSwitch_Paint(labelScan, null);
             }
         }
 
+        
     }
 }
