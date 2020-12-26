@@ -31,7 +31,7 @@ namespace RemoteClipboard.Login
             this.Height = 330;
             InitializeComponent();
 
-            if (!ClassStaticResources.isConnected)
+            if (!ClassStaticResources.tcpClient.IsConnected)
             {
                 buttonLogin.Cursor = Cursors.No;
             }
@@ -269,7 +269,7 @@ namespace RemoteClipboard.Login
 
         private void ButtonRegister_Click(object sender, EventArgs e)
         {
-            if (!ClassStaticResources.isConnected) return;
+            if (!ClassStaticResources.tcpClient.IsConnected) return;
             if (FormLogin.formLogin != null)
             {
                 FormLogin.formLogin.SwitchHide();
@@ -278,7 +278,7 @@ namespace RemoteClipboard.Login
         }
         private void ButtonForget_Click(object sender, EventArgs e)
         {
-            if (!ClassStaticResources.isConnected) return;
+            if (!ClassStaticResources.tcpClient.IsConnected) return;
             if (FormLogin.formLogin != null)
             {
                 FormLogin.formLogin.SwitchHide();
@@ -288,7 +288,7 @@ namespace RemoteClipboard.Login
         
         private void ButtonLogin_Click(object sender, EventArgs e)
         {
-            if (!ClassStaticResources.isConnected) return;
+            if (!ClassStaticResources.tcpClient.IsConnected) return;
             string account = inputAccount.Text;
             string password = inputPassword.Text;
 

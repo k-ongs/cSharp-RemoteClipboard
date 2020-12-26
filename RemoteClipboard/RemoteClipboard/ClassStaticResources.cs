@@ -22,7 +22,6 @@ namespace RemoteClipboard
         // 请勿打扰
         public static bool doNotDisturb = false;
         // 和服务器的连接状态
-        public static bool isConnected = false;
         public static ClassTcpClient tcpClient = new ClassTcpClient("127.0.0.1", 6010);
 
 
@@ -102,6 +101,12 @@ namespace RemoteClipboard
         {
             Regex regex = new Regex(@"^(1(3|4|5|8)[0-9])\d{8}$");
             return regex.IsMatch(phone);
+        }
+
+        public static bool IsComplexPass(string pass)
+        {
+            Regex regex = new Regex(@"^(?=.*[0-9])(?=.*[a-zA-Z]).{8,30}$");
+            return regex.IsMatch(pass);
         }
     }
 }

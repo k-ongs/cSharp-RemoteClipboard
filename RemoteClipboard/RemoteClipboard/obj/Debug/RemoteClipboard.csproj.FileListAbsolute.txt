@@ -36,3 +36,7 @@ D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.exe
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.pdb
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.FormDownload.resources
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.csprojAssemblyReference.cache
+D:\git\cSharp-\RemoteClipboard\RemoteClipboard\bin\Debug\Newtonsoft.Json.dll
+D:\git\cSharp-\RemoteClipboard\RemoteClipboard\bin\Debug\Newtonsoft.Json.pdb
+D:\git\cSharp-\RemoteClipboard\RemoteClipboard\bin\Debug\Newtonsoft.Json.xml
+D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.csproj.CopyComplete

@@ -15,6 +15,7 @@ namespace RemoteClipboard
     public partial class FormLogin : Form
     {
         private int timerTipsNum = 3;
+        private Timer timerNetworkTest;
         public static FormLogin formLogin;
         private Login.ControlPassLogin controlPassLogin = new Login.ControlPassLogin();
         private Login.ControlScanLogin controlScanLogin = new Login.ControlScanLogin();
@@ -105,10 +106,25 @@ namespace RemoteClipboard
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            if(!ClassStaticResources.isConnected)
+            timerNetworkTest = new Timer();
+            timerNetworkTest.Tick += TimerNetworkTest_Tick;
+            timerNetworkTest.Interval = 10000;
+            timerNetworkTest.Start();
+
+            TimerNetworkTest_Tick(null, null);
+        }
+
+        private void TimerNetworkTest_Tick(object sender, EventArgs e)
+        {
+            if (!ClassStaticResources.tcpClient.IsConnected)
             {
-                labelTips.Text = "您的网络异常，请先检查网络。";
+                labelTips.Text = "连接服务错误，正在重新连接...";
                 labelTips.Visible = true;
+            }
+            else
+            {
+                if(timerNetworkTest.Enabled == false)
+                    labelTips.Visible = false;
             }
         }
 

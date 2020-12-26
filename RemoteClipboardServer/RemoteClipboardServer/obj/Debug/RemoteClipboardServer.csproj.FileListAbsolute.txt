@@ -21,5 +21,9 @@ D:\git\cSharp-\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipb
 D:\git\cSharp-\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.csproj.CoreCompileInputs.cache
 D:\git\cSharp-\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.exe
 D:\git\cSharp-\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.pdb
+D:\git\cSharp-\RemoteClipboardServer\RemoteClipboardServer\bin\Debug\Newtonsoft.Json.dll
+D:\git\cSharp-\RemoteClipboardServer\RemoteClipboardServer\bin\Debug\Newtonsoft.Json.pdb
+D:\git\cSharp-\RemoteClipboardServer\RemoteClipboardServer\bin\Debug\Newtonsoft.Json.xml
+D:\git\cSharp-\RemoteClipboardServer\RemoteClipboardServer\obj\Debug\RemoteClipboardServer.csproj.CopyComplete
 D:\git\cSharp-\RemoteClipboardServer\RemoteClipboardServer\bin\Debug\DatabaseClipboard.mdf
 D:\git\cSharp-\RemoteClipboardServer\RemoteClipboardServer\bin\Debug\DatabaseClipboard_log.ldf

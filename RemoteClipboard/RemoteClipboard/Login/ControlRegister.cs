@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Drawing;
+using Newtonsoft.Json;
 using System.Windows.Forms;
 
 namespace RemoteClipboard.Login
 {
     class ControlRegister : Control
     {
+        private int timeVerify = 300;
         private Panel panel1;
         private Panel panel2;
         private Panel panel3;
@@ -16,6 +18,7 @@ namespace RemoteClipboard.Login
         private Label label5;
         private Label labelBack;
         private Label labelTitle;
+        private Timer timerVerify;
         private Label buttonVerify;
         private Label buttonRegister;
         private ControlInputBox inputVerify;
@@ -25,7 +28,6 @@ namespace RemoteClipboard.Login
         public ControlRegister()
         {
             InitializeComponent();
-            ClassStaticResources.tcpClient.OnServerReceiveHandler += OnServerReceiveHandler;
         }
 
         public void InitializeComponent()
@@ -40,6 +42,7 @@ namespace RemoteClipboard.Login
             this.label5 = new Label();
             this.labelBack = new Label();
             this.labelTitle = new Label();
+            this.timerVerify = new Timer();
             this.buttonVerify = new Label();
             this.buttonRegister = new Label();
             this.inputVerify = new ControlInputBox();
@@ -49,6 +52,12 @@ namespace RemoteClipboard.Login
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
+
+            //
+            // timerVerify
+            //
+            this.timerVerify.Interval = 1000;
+            this.timerVerify.Tick += TimerVerify_Tick;
 
             // 
             // labelTitle
@@ -181,8 +190,9 @@ namespace RemoteClipboard.Login
             this.inputPassword.Location = new Point(10, 6);
             this.inputPassword.Name = "inputPassword";
             this.inputPassword.Size = new Size(245, 18);
-            this.inputPassword.Tips = "请输入密码";
+            this.inputPassword.Tips = "请输入至少8位的密码";
             this.inputPassword.MaxLength = 26;
+            this.inputPassword.IsPassword = true;
 
             this.panel3.Controls.Add(this.label5);
             this.panel3.Controls.Add(this.inputPassword);
@@ -237,6 +247,26 @@ namespace RemoteClipboard.Login
             this.PerformLayout();
         }
 
+
+        /// <summary>
+        /// 刷新验证码按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TimerVerify_Tick(object sender, EventArgs e)
+        {
+            //timeVerify
+            buttonVerify.Text = "获取验证码(" + (--timeVerify) + ")";
+
+            if (timeVerify == 0)
+            {
+                buttonVerify.BackColor = ClassStaticResources.mainColors;
+                buttonVerify.ForeColor = Color.White;
+                buttonVerify.Cursor = Cursors.Hand;
+                timerVerify.Stop();
+            }
+        }
+
         private void LabelBack_Click(object sender, EventArgs e)
         {
             if (FormLogin.formLogin != null)
@@ -246,9 +276,15 @@ namespace RemoteClipboard.Login
             }
         }
 
+
+        /// <summary>
+        /// 发送手机验证码
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonVerify_Click(object sender, EventArgs e)
         {
-            if (!ClassStaticResources.isConnected) return;
+            if (!ClassStaticResources.tcpClient.IsConnected || buttonVerify.Cursor == Cursors.No) return;
             string account = inputAccount.Text;
             if (FormLogin.formLogin != null)
             {
@@ -257,41 +293,117 @@ namespace RemoteClipboard.Login
                     FormLogin.formLogin.TipsShow("请输入正确的手机号！");
                     return;
                 }
-                ClassStaticResources.tcpClient.SocketClientSend(104, System.Text.Encoding.UTF8.GetBytes(account));
+                Action<bool, byte[]> action = new Action<bool, byte[]>(ButtonVerify_Callback);
+                int callback = ClassStaticResources.tcpClient.Send(104, System.Text.Encoding.UTF8.GetBytes(account), action);
+
             }
         }
-        public void OnServerReceiveHandler(byte state, byte[] data)
+
+        /// <summary>
+        /// 发送手机验证码回调函数
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="data"></param>
+        private void ButtonVerify_Callback(bool state, byte[] data)
         {
-            System.Diagnostics.Debug.WriteLine(state);
-            string strData = System.Text.Encoding.UTF8.GetString(data);
-            System.Diagnostics.Debug.WriteLine(strData);
+            ClassJsonConvertObject.PhoneSend resultData = new ClassJsonConvertObject.PhoneSend();
+
+            if (data.Length > 0)
+            {
+                string msg = System.Text.Encoding.UTF8.GetString(data);
+                try
+                {
+                    resultData = JsonConvert.DeserializeObject<ClassJsonConvertObject.PhoneSend>(msg);
+                }
+                catch {
+                    resultData.code = "验证码发送失败";
+                }
+            }
+            
+            if (!state || resultData.state != "true")
+            {
+                this.Invoke(new Action(() => {
+                    FormLogin.formLogin.TipsShow(resultData.code);
+                }));
+            }
+            else
+            {
+                this.Invoke(new Action(() => {
+                    buttonVerify.ForeColor = Color.Black;
+                    buttonVerify.BackColor = Color.WhiteSmoke;
+                    buttonVerify.Cursor = Cursors.No;
+                    buttonVerify.Text = "获取验证码(" + timeVerify + ")";
+                    // 发送成功
+                    timerVerify.Start();
+                }));
+                
+            }
         }
 
+
+        /// <summary>
+        /// 注册按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonRegister_Click(object sender, EventArgs e)
         {
-            if (!ClassStaticResources.isConnected) return;
+            if (!ClassStaticResources.tcpClient.IsConnected) return;
             string account = inputAccount.Text;
+            string verify = inputVerify.Text;
             string password = inputPassword.Text;
 
-            if (FormLogin.formLogin != null)
+            if(FormLogin.formLogin != null)
             {
-                if (account == "")
-                {
-                    FormLogin.formLogin.TipsShow("请输入s");
-                    return;
-                }
                 if (!ClassStaticResources.IsPhone(account))
                 {
-                    FormLogin.formLogin.TipsShow("请输入正确的手机号再登录");
+                    FormLogin.formLogin.TipsShow("请输入正确的手机号再注册");
                     return;
                 }
-                if (password == "")
+                if (verify.Length != 6)
                 {
-                    FormLogin.formLogin.TipsShow("请输入密码后再登录");
+                    FormLogin.formLogin.TipsShow("请输入正确的验证码再注册");
+                    return;
+                }
+                if (!ClassStaticResources.IsComplexPass(password))
+                {
+                    FormLogin.formLogin.TipsShow("请输入复杂密码再注册");
                     return;
                 }
 
-                //FormLogin.formLogin.Close();
+                Action<bool, byte[]> action = new Action<bool, byte[]>(ButtonRegister_Callback);
+                ClassJsonConvertObject.PhonePass data = new ClassJsonConvertObject.PhonePass(account, password, verify);
+                ClassStaticResources.tcpClient.Send(105, System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)), action);
+            }
+        }
+        private void ButtonRegister_Callback(bool state, byte[] data)
+        {
+            ClassJsonConvertObject.PhoneSend resultData = new ClassJsonConvertObject.PhoneSend();
+
+            if (data.Length > 0)
+            {
+                string msg = System.Text.Encoding.UTF8.GetString(data);
+                try
+                {
+                    resultData = JsonConvert.DeserializeObject<ClassJsonConvertObject.PhoneSend>(msg);
+                }
+                catch
+                {
+                    resultData.code = "账号注册失败";
+                }
+            }
+
+            if (!state || resultData.state != "true")
+            {
+                this.Invoke(new Action(() => {
+                    FormLogin.formLogin.TipsShow(resultData.code);
+                }));
+            }
+            else
+            {
+                this.Invoke(new Action(() => {
+                    // 注册成功
+                }));
             }
         }
     }

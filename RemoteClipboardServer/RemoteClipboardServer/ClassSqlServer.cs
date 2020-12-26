@@ -86,7 +86,10 @@ namespace RemoteClipboardServer
                 adapter.Fill(dataTable);
                 this.Close();
             }
-            catch{}
+            catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.ToString());
+            }
             this.Clear();
             return dataTable;
         }

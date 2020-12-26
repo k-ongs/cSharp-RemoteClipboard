@@ -11,10 +11,16 @@ namespace RemoteClipboardServer
         private bool isListening = true;
         private Socket socketServer = null;
         private IPEndPoint iPEndPoint = null;
+        private Thread processAcceptThread = null;
         private Dictionary<string, Socket> socketClientList = null;
 
+        public bool IsListening
+        {
+            get { return isListening; }
+        }
+
         // 客户端信息处理
-        public delegate void onClientReceiveHandler(string endPoint, byte state, byte[] data);
+        public delegate void onClientReceiveHandler(string endPoint, int state,int callback, byte[] data);
         public event onClientReceiveHandler OnClientReceiveHandler;
 
         // 客户端断开连接
@@ -23,6 +29,8 @@ namespace RemoteClipboardServer
 
         public ClassTcpServer(string host, int port)
         {
+            processAcceptThread = new Thread(ProcessAccept);
+            processAcceptThread.IsBackground = true;
             iPEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
             socketClientList = new Dictionary<string, Socket>();
             socketServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -35,16 +43,13 @@ namespace RemoteClipboardServer
         {
             try
             {
-                isListening = true;
                 if(!socketServer.IsBound)
                 {
                     socketServer.Bind(iPEndPoint);
                     socketServer.Listen(0);
-
-                    Thread processAcceptThread = new Thread(ProcessAccept);
-                    processAcceptThread.IsBackground = true;
                     processAcceptThread.Start();
                 }
+                isListening = true;
             }
             catch
             {
@@ -53,6 +58,9 @@ namespace RemoteClipboardServer
             return true;
         }
 
+        /// <summary>
+        /// 停止服务
+        /// </summary>
         public void Stop()
         {
             isListening = false;
@@ -62,7 +70,10 @@ namespace RemoteClipboardServer
             }
         }
 
-        public void ProcessAccept()
+        /// <summary>
+        /// 客户端连接事件
+        /// </summary>
+        private void ProcessAccept()
         {
             Socket connection = null;
             while (isListening && socketServer.IsBound)
@@ -78,6 +89,10 @@ namespace RemoteClipboardServer
             }
         }
 
+        /// <summary>
+        /// 客户端数据接收
+        /// </summary>
+        /// <param name="obj"></param>
         public void SocketClientReceive(object obj)
         {
             Socket connection = obj as Socket;
@@ -86,37 +101,53 @@ namespace RemoteClipboardServer
                 try
                 {
                     byte[] data = new byte[1024];
+                    List<byte> byteSource = new List<byte>();
                     int length = connection.Receive(data, data.Length, 0);
 
-
+                    byteSource.AddRange(data.Take(length));
                     while (connection.Available > 0)
                     {
                         Thread.Sleep(100);
                         byte[] temp = new byte[1024];
-                        int len = connection.Receive(temp, temp.Length, 0);
-                        if (len > 0)
+                        int tempLen = connection.Receive(temp, temp.Length, 0);
+                        if (tempLen > 0)
                         {
-                            byte[] dataTemp = new byte[length + len];
-                            data.CopyTo(dataTemp, 0);
-                            temp.Take(len).ToArray().CopyTo(dataTemp, length);
-                            length += len;
-                            data = dataTemp;
+                            byteSource.AddRange(temp.Take(tempLen));
                         }
                     }
 
-                    if (length > 1)
+                    data = byteSource.ToArray();
+                    length = data.Length;
+
+                    if (length > 3)
                     {
                         // 获取标识码
-                        byte state = data[length - 1];
-                        // 截取数据
-                        data = data.Take(length - 1).ToArray();
-                        // 执行客户端信息响应事件
-                        OnClientReceiveHandler?.Invoke(connection.RemoteEndPoint.ToString(), state, data);
+                        int state;
+                        if (System.Int32.TryParse(System.Text.Encoding.UTF8.GetString(data.Take(3).ToArray()), out state))
+                        {
+                            // 获取回调ID
+                            int callbackId = -1;
+                            uint isCallback = data[3];
+
+                            data = data.Skip(4).ToArray();
+                            if (isCallback == 1)
+                            {
+                                if (System.Int32.TryParse(System.Text.Encoding.UTF8.GetString(data.Take(4).ToArray()), out callbackId))
+                                {
+                                    data = data.Skip(4).ToArray();
+                                }
+                                else
+                                {
+                                    callbackId = -1;
+                                }
+                            }
+                            OnClientReceiveHandler?.Invoke(connection.RemoteEndPoint.ToString(), state, callbackId, data);
+                        }
                     }
                 }
                 catch
                 {
-                    OnClientCloseHandler?.Invoke(connection.RemoteEndPoint.ToString());
+                    //OnClientCloseHandler?.Invoke(connection.RemoteEndPoint.ToString());
                     return;
                 }
 
@@ -124,11 +155,36 @@ namespace RemoteClipboardServer
             }
         }
 
-        public void SocketClientSend(string endPoint, byte state, byte[] data)
+        public void Send(string endPoint, int state, byte[] data)
         {
             if (socketClientList.Keys.Contains(endPoint) && socketClientList[endPoint] != null)
             {
-                data = data.Append(state).ToArray();
+                List<byte> byteSource = new List<byte>();
+                byte[] byteState = System.Text.Encoding.UTF8.GetBytes(state.ToString().PadLeft(3, '0'));
+
+                byteSource.AddRange(byteState);
+                byteSource.AddRange(new byte[] {0});
+                byteSource.AddRange(data);
+
+                data = byteSource.ToArray();
+                socketClientList[endPoint].Send(data);
+            }
+        }
+
+        public void Send(string endPoint, int state, int callbackId, byte[] data)
+        {
+            if (socketClientList.Keys.Contains(endPoint) && socketClientList[endPoint] != null)
+            {
+                List<byte> byteSource = new List<byte>();
+                byte[] byteState = System.Text.Encoding.UTF8.GetBytes(state.ToString().PadLeft(3, '0'));
+                byte[] byteCallbackId = System.Text.Encoding.UTF8.GetBytes(callbackId.ToString().PadLeft(4, '0'));
+
+                byteSource.AddRange(byteState);
+                byteSource.AddRange(new byte[] { 1 });
+                byteSource.AddRange(byteCallbackId);
+                byteSource.AddRange(data);
+
+                data = byteSource.ToArray();
                 socketClientList[endPoint].Send(data);
             }
         }

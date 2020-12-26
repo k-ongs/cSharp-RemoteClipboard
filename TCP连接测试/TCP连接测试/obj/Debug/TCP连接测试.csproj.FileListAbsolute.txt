@@ -8,3 +8,17 @@ C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\obj\Debug\TCP
 C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.csproj.CoreCompileInputs.cache
 C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.exe
 C:\Users\16243\Desktop\c#大作业\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.pdb
+D:\git\cSharp-\TCP连接测试\TCP连接测试\bin\Debug\TCP连接测试.exe.config
+D:\git\cSharp-\TCP连接测试\TCP连接测试\bin\Debug\TCP连接测试.exe
+D:\git\cSharp-\TCP连接测试\TCP连接测试\bin\Debug\TCP连接测试.pdb
+D:\git\cSharp-\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.csprojAssemblyReference.cache
+D:\git\cSharp-\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.Form1.resources
+D:\git\cSharp-\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.Properties.Resources.resources
+D:\git\cSharp-\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.csproj.GenerateResource.cache
+D:\git\cSharp-\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.csproj.CoreCompileInputs.cache
+D:\git\cSharp-\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.exe
+D:\git\cSharp-\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.pdb
+D:\git\cSharp-\TCP连接测试\TCP连接测试\bin\Debug\Newtonsoft.Json.dll
+D:\git\cSharp-\TCP连接测试\TCP连接测试\bin\Debug\Newtonsoft.Json.pdb
+D:\git\cSharp-\TCP连接测试\TCP连接测试\bin\Debug\Newtonsoft.Json.xml
+D:\git\cSharp-\TCP连接测试\TCP连接测试\obj\Debug\TCP连接测试.csproj.CopyComplete

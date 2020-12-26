@@ -83,6 +83,7 @@ namespace RemoteClipboard
             base.WndProc(ref m);
         }
         #endregion
+        private Timer timerNetworkTest;
         private int menuButtonActive = 1;
         private ControlDeviceList deviceList = new ControlDeviceList();
         private ControlSoftwareSetting softwareSetting = new ControlSoftwareSetting();
@@ -93,14 +94,24 @@ namespace RemoteClipboard
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Hide();
 
+            timerNetworkTest = new Timer();
+            timerNetworkTest.Tick += TimerNetworkTest_Tick;
+            timerNetworkTest.Interval = 10000;
+            timerNetworkTest.Start();
+
             ClassStaticResources.tcpClient.OnServerCloseHandler += onServerCloseHandler;
             ClassStaticResources.tcpClient.OnServerReceiveHandler += OnServerReceiveHandler;
-            ClassStaticResources.isConnected = ClassStaticResources.tcpClient.Start();
-
-            System.Diagnostics.Debug.WriteLine(ClassStaticResources.isConnected);
+            ClassStaticResources.tcpClient.Start();
+        }
+        private void TimerNetworkTest_Tick(object sender, EventArgs e)
+        {
+            if(!ClassStaticResources.tcpClient.IsConnected)
+            {
+                ClassStaticResources.tcpClient.Start();
+            }
         }
 
-        public void OnServerReceiveHandler(byte state, byte[] data)
+        public void OnServerReceiveHandler(int state, byte[] data)
         {
 
         }
