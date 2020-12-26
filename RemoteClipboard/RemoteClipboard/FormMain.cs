@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
@@ -89,16 +83,33 @@ namespace RemoteClipboard
             base.WndProc(ref m);
         }
         #endregion
-
         private int menuButtonActive = 1;
         private ControlDeviceList deviceList = new ControlDeviceList();
         private ControlSoftwareSetting softwareSetting = new ControlSoftwareSetting();
+
         public FormMain()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Hide();
+
+            ClassStaticResources.tcpClient.OnServerCloseHandler += onServerCloseHandler;
+            ClassStaticResources.tcpClient.OnServerReceiveHandler += OnServerReceiveHandler;
+            ClassStaticResources.isConnected = ClassStaticResources.tcpClient.Start();
+
+            System.Diagnostics.Debug.WriteLine(ClassStaticResources.isConnected);
         }
+
+        public void OnServerReceiveHandler(byte state, byte[] data)
+        {
+
+        }
+
+        public void onServerCloseHandler()
+        {
+
+        }
+
 
         private void FormMain_Load(object sender, EventArgs e)
         {
@@ -190,10 +201,6 @@ namespace RemoteClipboard
                     }
                 }
             }
-        }
-
-        private void panel2_Click(object sender, EventArgs e)
-        {
         }
     }
 }

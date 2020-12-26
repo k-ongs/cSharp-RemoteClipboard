@@ -11,12 +11,14 @@ using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 using System.Runtime.InteropServices;
 
 namespace RemoteClipboardServer
 {
     public partial class FormMain : Form
     {
+        private string apiUrl = "http://phone.xbear.vip/";
         private int totalNumberOfUsers = 0;
         private ClassSqlServer sqlServer = new ClassSqlServer();
         private ClassTcpServer tcpServer = new ClassTcpServer("0.0.0.0", 6010);
@@ -214,8 +216,22 @@ namespace RemoteClipboardServer
         {
             switch(state)
             {
-                case 100:
+                // 发送手机验证码
+                case 104:
+                {
+                    string strData = Encoding.UTF8.GetString(data);
+
+        
+                    System.Diagnostics.Debug.WriteLine(HttpGet(apiUrl + "/send/" + strData));
+
+
+                    //tcpServer.SocketClientSend(endPoint, 105, System.Text.Encoding.UTF8.GetBytes("asd"));
+                    //System.Text.Encoder.
+                        //data
+                    //DataTable dataTable = sqlServer.Field("*").Select("userInfo");
                     break;
+                }
+                    
             }
         }
         /// <summary>
@@ -225,6 +241,26 @@ namespace RemoteClipboardServer
         private void OnClientCloseHandler(string endPoint)
         {
 
+        }
+
+
+        /// <summary>
+        /// GET方式发送得结果
+        /// </summary>
+        /// <param name="url">请求的url</param>
+        public static string HttpGet(string url)
+        {
+            System.Net.WebClient wc = new System.Net.WebClient();
+            wc.Credentials = System.Net.CredentialCache.DefaultCredentials;
+            wc.Encoding = Encoding.UTF8;
+            string returnText = wc.DownloadString(url);
+
+            if (returnText.Contains("errcode"))
+            {
+                //可能发生错误 
+            }
+
+            return returnText;
         }
     }
 }

@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassTcpClient.cs" />
     <Compile Include="ControlBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -62,11 +63,8 @@
     <Compile Include="ControlDeviceList.Designer.cs">
       <DependentUpon>ControlDeviceList.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlInputBoxs.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ControlInputBoxs.Designer.cs">
-      <DependentUpon>ControlInputBoxs.cs</DependentUpon>
+    <Compile Include="ControlInputBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="ControlSoftwareSetting.cs">
       <SubType>UserControl</SubType>
@@ -74,11 +72,11 @@
     <Compile Include="ControlSoftwareSetting.Designer.cs">
       <DependentUpon>ControlSoftwareSetting.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormAddDevice.cs">
+    <Compile Include="FormDownload.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAddDevice.Designer.cs">
-      <DependentUpon>FormAddDevice.cs</DependentUpon>
+    <Compile Include="FormDownload.Designer.cs">
+      <DependentUpon>FormDownload.cs</DependentUpon>
     </Compile>
     <Compile Include="FormLogin.cs">
       <SubType>Form</SubType>
@@ -103,6 +101,18 @@
     </Compile>
     <Compile Include="ControlPortraitBox.Designer.cs">
       <DependentUpon>ControlPortraitBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Login\ControlForgetPass.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Login\ControlPassLogin.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Login\ControlRegister.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Login\ControlScanLogin.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -129,14 +139,11 @@
     <EmbeddedResource Include="ControlDeviceList.resx">
       <DependentUpon>ControlDeviceList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlInputBoxs.resx">
-      <DependentUpon>ControlInputBoxs.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ControlSoftwareSetting.resx">
       <DependentUpon>ControlSoftwareSetting.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormAddDevice.resx">
-      <DependentUpon>FormAddDevice.cs</DependentUpon>
+    <EmbeddedResource Include="FormDownload.resx">
+      <DependentUpon>FormDownload.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
@@ -261,8 +268,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="RemoteClipboard.ico" />
-    <None Include="Resources\system\inputBackground.png" />
-    <None Include="Resources\system\toolTip.png" />
+    <None Include="Resources\system\qrcode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

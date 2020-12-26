@@ -29,13 +29,15 @@ namespace RemoteClipboard
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogin));
             this.labelTips = new System.Windows.Forms.Label();
             this.labelScan = new System.Windows.Forms.Label();
             this.labelPass = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.panelShow = new System.Windows.Forms.Panel();
+            this.timerTips = new System.Windows.Forms.Timer(this.components);
             this.controlBar1 = new RemoteClipboard.ControlBar();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,12 +52,12 @@ namespace RemoteClipboard
             this.labelTips.Padding = new System.Windows.Forms.Padding(6, 0, 0, 0);
             this.labelTips.Size = new System.Drawing.Size(260, 40);
             this.labelTips.TabIndex = 9;
-            this.labelTips.Text = "您的网络异常，请先检查网络。";
             this.labelTips.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.labelTips.Visible = false;
             // 
             // labelScan
             // 
+            this.labelScan.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelScan.Font = new System.Drawing.Font("微软雅黑", 11F);
             this.labelScan.Location = new System.Drawing.Point(0, 0);
             this.labelScan.Margin = new System.Windows.Forms.Padding(0);
@@ -69,6 +71,7 @@ namespace RemoteClipboard
             // 
             // labelPass
             // 
+            this.labelPass.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelPass.Font = new System.Drawing.Font("微软雅黑", 11F);
             this.labelPass.Location = new System.Drawing.Point(130, 0);
             this.labelPass.Margin = new System.Windows.Forms.Padding(0);
@@ -90,6 +93,19 @@ namespace RemoteClipboard
             this.flowLayoutPanel1.Size = new System.Drawing.Size(260, 30);
             this.flowLayoutPanel1.TabIndex = 13;
             // 
+            // panelShow
+            // 
+            this.panelShow.Location = new System.Drawing.Point(30, 85);
+            this.panelShow.Margin = new System.Windows.Forms.Padding(0);
+            this.panelShow.Name = "panelShow";
+            this.panelShow.Size = new System.Drawing.Size(260, 330);
+            this.panelShow.TabIndex = 14;
+            // 
+            // timerTips
+            // 
+            this.timerTips.Interval = 1000;
+            this.timerTips.Tick += new System.EventHandler(this.timerTips_Tick);
+            // 
             // controlBar1
             // 
             this.controlBar1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(158)))), ((int)(((byte)(247)))));
@@ -105,22 +121,14 @@ namespace RemoteClipboard
             this.controlBar1.TabIndex = 8;
             this.controlBar1.Title = "远程剪贴板";
             // 
-            // panel1
-            // 
-            this.panel1.Location = new System.Drawing.Point(30, 85);
-            this.panel1.Margin = new System.Windows.Forms.Padding(0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(260, 330);
-            this.panel1.TabIndex = 14;
-            // 
             // FormLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(320, 440);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.labelTips);
+            this.Controls.Add(this.panelShow);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.controlBar1);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -145,7 +153,8 @@ namespace RemoteClipboard
         private System.Windows.Forms.Label labelScan;
         private System.Windows.Forms.Label labelPass;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panelShow;
+        private System.Windows.Forms.Timer timerTips;
     }
 }
 

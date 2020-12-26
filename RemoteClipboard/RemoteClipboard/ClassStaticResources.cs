@@ -7,6 +7,7 @@ using System.IO;
 using System.Xml;
 using System.Threading.Tasks;
 using System.Configuration;
+using System.Text.RegularExpressions;
 
 namespace RemoteClipboard
 {
@@ -14,10 +15,16 @@ namespace RemoteClipboard
     {
         // 头像id
         public static int portraitPid = 0;
+        // 用户密码
         public static string password = "";
         // 主体颜色
         public static Color mainColors = Color.FromArgb(31, 158, 247);
+        // 请勿打扰
         public static bool doNotDisturb = false;
+        // 和服务器的连接状态
+        public static bool isConnected = false;
+        public static ClassTcpClient tcpClient = new ClassTcpClient("127.0.0.1", 6010);
+
 
         private static XmlDocument xmlDocument;
         private static readonly string configFileName = "AppConfig.xml";
@@ -89,6 +96,12 @@ namespace RemoteClipboard
             XmlNode node = xmlDocument.SelectSingleNode("Root/Config/" + key);
 
             return node?.InnerText ?? "";
+        }
+
+        public static bool IsPhone(string phone)
+        {
+            Regex regex = new Regex(@"^(1(3|4|5|8)[0-9])\d{8}$");
+            return regex.IsMatch(phone);
         }
     }
 }

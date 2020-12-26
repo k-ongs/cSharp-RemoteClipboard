@@ -2,10 +2,12 @@
 <Root>
   <Config>
     <test>123456</test>
-    <password>123456</password>
+    <password>123123</password>
     <savePassword>true</savePassword>
     <automaticLogon>false</automaticLogon>
     <portrait>5</portrait>
     <notDisturb>true</notDisturb>
+    <account>12312312321</account>
+    <remember>true</remember>
   </Config>
 </Root>

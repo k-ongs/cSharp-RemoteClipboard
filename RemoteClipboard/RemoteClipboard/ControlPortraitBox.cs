@@ -36,9 +36,11 @@ namespace RemoteClipboard
         private void pictureBox10_Click(object sender, EventArgs e)
         {
             FormImageChange formTemp = new FormImageChange(this);
+            int gid = GC.GetGeneration(formTemp);
             formTemp.StartPosition = FormStartPosition.CenterParent;
             formTemp.ShowDialog();
             formTemp.Dispose();
+            GC.Collect(gid);
         }
     }
 }

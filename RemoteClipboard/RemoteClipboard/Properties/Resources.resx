@@ -157,9 +157,6 @@
   <data name="portraitBackRT" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\system\portraitBackRT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="toolTip" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\system\toolTip.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="portraitBackLB" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\system\portraitBackLB.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -169,7 +166,7 @@
   <data name="portraitBackRB" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\system\portraitBackRB.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="inputBackground" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\system\inputBackground.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="qrcode" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\system\qrcode.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

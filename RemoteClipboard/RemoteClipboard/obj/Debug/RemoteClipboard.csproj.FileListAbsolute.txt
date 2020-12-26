@@ -20,12 +20,9 @@ C:\Users\16243\Desktop\c#大作业\RemoteClipboard\RemoteClipboard\obj\Debug\Rem
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\bin\Debug\RemoteClipboard.exe.config
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\bin\Debug\RemoteClipboard.exe
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\bin\Debug\RemoteClipboard.pdb
-D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.csprojAssemblyReference.cache
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.ControlBar.resources
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.ControlDeviceList.resources
-D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.ControlInputBoxs.resources
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.ControlSoftwareSetting.resources
-D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.FormAddDevice.resources
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.FormLogin.resources
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.FormImageChange.resources
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.FormMain.resources
@@ -37,3 +34,5 @@ D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.csproj.
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.csproj.CoreCompileInputs.cache
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.exe
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.pdb
+D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.FormDownload.resources
+D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.csprojAssemblyReference.cache
