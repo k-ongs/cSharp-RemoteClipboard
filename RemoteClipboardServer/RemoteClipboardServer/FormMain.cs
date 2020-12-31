@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
+//using CSR = RemoteClipboardServer.ClassStaticResources;
 
 namespace RemoteClipboardServer
 {

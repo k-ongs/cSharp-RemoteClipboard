@@ -10,9 +10,9 @@ namespace RemoteClipboardServer
     {
         public class PhoneSend
         {
-            public string state { get; set; }
-            public string code { get; set; }
-            public string SessionContext { get; set; }
+            public string ret { get; set; }
+            public string msg { get; set; }
+            public string data { get; set; }
         }
 
         public class PhonePass
