@@ -141,7 +141,7 @@ namespace RemoteClipboard.Login
             this.buttonVerify.AutoSize = false;
             this.buttonVerify.Width = 100;
             this.buttonVerify.Height = 22;
-            this.buttonVerify.BackColor = ClassStaticResources.mainColors;
+            this.buttonVerify.BackColor = ClassStatic.mainColors;
             this.buttonVerify.ForeColor = Color.White;
             this.buttonVerify.TextAlign = ContentAlignment.MiddleCenter;
             this.buttonVerify.Location = new Point(160, 5);

@@ -18,7 +18,7 @@ namespace RemoteClipboard
             get { return pid; }
             set {
                 pid = (value < 12 && value > -1) ? value : 0;
-                pictureBox9.Image = ClassStaticResources.GetPortraitImage(pid);
+                pictureBox9.Image = ClassStatic.GetPortraitImage(pid);
             }
         }
         public bool ReplaceImage

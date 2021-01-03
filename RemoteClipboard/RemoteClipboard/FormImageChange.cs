@@ -149,11 +149,11 @@ namespace RemoteClipboard
             if (portrait.Portrait != (int)pictureSelect.Tag)
             {
                 portrait.Portrait = (int)pictureSelect.Tag;
-                ClassStaticResources.portraitPid = (int)pictureSelect.Tag;
-                ClassStaticResources.SetConfig("portrait", pictureSelect.Tag.ToString());
+                ClassStatic.portraitPid = (int)pictureSelect.Tag;
+                ClassStatic.SetConfig("portrait", pictureSelect.Tag.ToString());
 
                 // 已经登录更改头像事件
-                if(ClassStaticResources.password != "")
+                if(ClassStatic.password != "")
                 {
 
                 }

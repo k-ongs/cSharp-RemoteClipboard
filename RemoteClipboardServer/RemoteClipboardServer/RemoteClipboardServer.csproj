@@ -65,10 +65,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClassJsonConvertObject.cs" />
     <Compile Include="ClassLoginHandle.cs" />
     <Compile Include="ClassSqlServer.cs" />
-    <Compile Include="ClassStaticResources.cs" />
+    <Compile Include="ClassStatic.cs" />
     <Compile Include="ClassTcpServer.cs" />
     <Compile Include="ControlBar.cs">
       <SubType>UserControl</SubType>

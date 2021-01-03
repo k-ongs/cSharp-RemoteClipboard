@@ -131,7 +131,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ResourcePortrait.resx</DependentUpon>
     </Compile>
-    <Compile Include="ClassStaticResources.cs" />
+    <Compile Include="ClassStatic.cs" />
     <Compile Include="ControlStatusOnline.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -116,7 +116,7 @@ namespace RemoteClipboard
 
         private void TimerNetworkTest_Tick(object sender, EventArgs e)
         {
-            if (!ClassStaticResources.tcpClient.IsConnected)
+            if (!ClassStatic.tcpClient.IsConnected)
             {
                 labelTips.Text = "连接服务错误，正在重新连接...";
                 labelTips.Visible = true;

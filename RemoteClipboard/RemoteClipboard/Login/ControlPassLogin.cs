@@ -31,19 +31,19 @@ namespace RemoteClipboard.Login
             this.Height = 330;
             InitializeComponent();
 
-            if (!ClassStaticResources.tcpClient.IsConnected)
+            if (!ClassStatic.tcpClient.IsConnected)
             {
                 buttonLogin.Cursor = Cursors.No;
             }
 
-            string pid = ClassStaticResources.GetConfig("portrait");
-            string account = ClassStaticResources.GetConfig("account");
-            string password = ClassStaticResources.GetConfig("password");
-            string remember = ClassStaticResources.GetConfig("remember");
+            string pid = ClassStatic.GetConfig("portrait");
+            string account = ClassStatic.GetConfig("account");
+            string password = ClassStatic.GetConfig("password");
+            string remember = ClassStatic.GetConfig("remember");
 
-            ClassStaticResources.portraitPid = (pid == "") ? 0 : Convert.ToInt32(pid);
+            ClassStatic.portraitPid = (pid == "") ? 0 : Convert.ToInt32(pid);
 
-            controlPortraitBox.Portrait = ClassStaticResources.portraitPid;
+            controlPortraitBox.Portrait = ClassStatic.portraitPid;
 
 
             if (account.Length == 11)
@@ -269,7 +269,7 @@ namespace RemoteClipboard.Login
 
         private void ButtonRegister_Click(object sender, EventArgs e)
         {
-            if (!ClassStaticResources.tcpClient.IsConnected) return;
+            if (!ClassStatic.tcpClient.IsConnected) return;
             if (FormLogin.formLogin != null)
             {
                 FormLogin.formLogin.SwitchHide();
@@ -278,7 +278,7 @@ namespace RemoteClipboard.Login
         }
         private void ButtonForget_Click(object sender, EventArgs e)
         {
-            if (!ClassStaticResources.tcpClient.IsConnected) return;
+            if (!ClassStatic.tcpClient.IsConnected) return;
             if (FormLogin.formLogin != null)
             {
                 FormLogin.formLogin.SwitchHide();
@@ -288,7 +288,7 @@ namespace RemoteClipboard.Login
         
         private void ButtonLogin_Click(object sender, EventArgs e)
         {
-            if (!ClassStaticResources.tcpClient.IsConnected) return;
+            if (!ClassStatic.tcpClient.IsConnected) return;
             string account = inputAccount.Text;
             string password = inputPassword.Text;
 
@@ -299,7 +299,7 @@ namespace RemoteClipboard.Login
                     FormLogin.formLogin.TipsShow("请输入账号后再登录");
                     return;
                 }
-                if (ClassStaticResources.IsPhone(account))
+                if (ClassStatic.IsPhone(account))
                 {
                     FormLogin.formLogin.TipsShow("请输入正确的手机号再登录");
                     return;
@@ -310,11 +310,11 @@ namespace RemoteClipboard.Login
                     return;
                 }
 
-                ClassStaticResources.password = password;
+                ClassStatic.password = password;
                 string remember = checkBoxRemember.Checked ? "true" : "false";
-                ClassStaticResources.SetConfig("account", account);
-                ClassStaticResources.SetConfig("password", password);
-                ClassStaticResources.SetConfig("remember", remember);
+                ClassStatic.SetConfig("account", account);
+                ClassStatic.SetConfig("password", password);
+                ClassStatic.SetConfig("remember", remember);
                 FormLogin.formLogin.Close();
             }
         }

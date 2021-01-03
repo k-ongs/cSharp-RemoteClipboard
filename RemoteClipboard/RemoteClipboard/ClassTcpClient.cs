@@ -11,15 +11,27 @@ namespace RemoteClipboard
 {
     class ClassTcpClient
     {
-        private bool isConnected = false;
+        // 是否连接到服务器
+        private bool socketConnect = false;
+        // 实现Berkeley套接字接口
         private Socket socketClient = null;
+        // 服务器网络终结点
         private EndPoint iPEndPoint = null;
+        // 发送信息锁
+        private Object sendLock = new Object();
+        // 接收服务端信息线程
         private Thread socketReceiveThread = null;
+        // 向服务端发送心跳包线程
+        private Thread socketHeartThread = null;
+        // 回调函数列表
         private Dictionary<int, Action<bool, byte[]>> sendCallbackList = new Dictionary<int, Action<bool, byte[]>>();
 
+        /// <summary>
+        /// 是否连接到服务器
+        /// </summary>
         public bool IsConnected
         {
-            get { return isConnected; }
+            get { return socketConnect; }
         }
 
         public delegate void ServerReceiveHandler(int state, byte[] data);
@@ -27,24 +39,72 @@ namespace RemoteClipboard
         public delegate void onServerCloseHandler();
         public event onServerCloseHandler OnServerCloseHandler;
 
+        /// <summary>
+        /// ClassTcpClient构造函数
+        /// </summary>
+        /// <param name="host">服务器IP地址</param>
+        /// <param name="port">服务器监听端口号</param>
         public ClassTcpClient(string host, int port)
         {
-            socketReceiveThread = new Thread(SocketClientReceive);
-            socketReceiveThread.IsBackground = true;
-
             iPEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
-            socketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
         /// <summary>
-        /// Receive事件
+        /// 连接到服务器
         /// </summary>
-        private void SocketClientReceive()
+        /// <returns></returns>
+        public bool Start()
         {
-            while (isConnected)
+            try
+            {
+                if (!socketConnect)
+                {
+                    socketConnect = true;
+                    // 连接到服务器
+                    iPEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 6010);
+                    socketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    socketClient.Connect(iPEndPoint);
+                    // 开启服务端信息处理进程
+                    socketReceiveThread = new Thread(SocketReceive);
+                    socketReceiveThread.IsBackground = true;
+                    socketReceiveThread.Start();
+                    // 开启服务端心跳包进程
+                    socketHeartThread = new Thread(SocketHeart);
+                    socketHeartThread.IsBackground = true;
+                    socketHeartThread.Start();
+                }
+            }
+            catch
+            {
+                socketConnect = false;
+            }
+            return socketConnect;
+        }
+
+        /// <summary>
+        /// 断开与服务端的连接
+        /// </summary>
+        public void Stop()
+        {
+            if (socketConnect)
+            {
+                socketConnect = false;
+                socketClient.Close();
+                socketClient.Dispose();
+                sendCallbackList.Clear();
+            }
+        }
+
+        /// <summary>
+        /// 接收服务端信息
+        /// </summary>
+        private void SocketReceive()
+        {
+            while (socketConnect && socketClient != null && socketClient.Connected)
             {
                 try
                 {
+                    byte[] temp = new byte[1024];
                     byte[] data = new byte[1024];
                     List<byte> byteSource = new List<byte>();
                     int length = socketClient.Receive(data, data.Length, 0);
@@ -53,14 +113,12 @@ namespace RemoteClipboard
                     while (socketClient.Available > 0)
                     {
                         Thread.Sleep(100);
-                        byte[] temp = new byte[1024];
-                        int tempLen = socketClient.Receive(temp, temp.Length, 0);
-                        if (tempLen > 0)
+                        int len = socketClient.Receive(temp, temp.Length, 0);
+                        if (len > 0)
                         {
-                            byteSource.AddRange(temp.Take(tempLen));
+                            byteSource.AddRange(temp.Take(len));
                         }
                     }
-
                     data = byteSource.ToArray();
                     length = data.Length;
 
@@ -98,17 +156,23 @@ namespace RemoteClipboard
                         // 丢弃协议不合法的数据包
                     }
                     // 丢弃长度不合法的数据包
+
                 }
-                catch
+                catch (SocketException ex)
                 {
-                    isConnected = false;
+                    System.Diagnostics.Debug.WriteLine(ex.ToString());
+                    // 断开连接
+                    socketConnect = false;
+                    sendCallbackList.Clear();
                     // 断开与服务器的连接
                     OnServerCloseHandler?.Invoke();
                     return;
                 }
-                Thread.Sleep(100);
+                catch
+                {
+                    // 其他错误
+                }
             }
-            // 退出Receive事件
         }
 
         /// <summary>
@@ -117,74 +181,79 @@ namespace RemoteClipboard
         /// <param name="state">标识码</param>
         /// <param name="data">数据</param>
         /// <param name="action"></param>
-        /// <returns></returns>
-        public int Send(int state, byte[] data, Action<bool, byte[]> action, int sheep = 2000)
+        public bool Send(int state, byte[] data, Action<bool, byte[]> action, int sheep = 2000)
         {
-            if (isConnected && socketClient != null && data.Length < 999999999)
+            if (socketConnect && socketClient != null && data.Length < 999999999)
             {
-                int callbackId = sendCallbackList.Count;
-
-                List<byte> byteSource = new List<byte>();
-                byte[] byteState = Encoding.UTF8.GetBytes(state.ToString().PadLeft(3, '0'));
-                byte[] byteCallbackId = Encoding.UTF8.GetBytes(callbackId.ToString().PadLeft(4, '0'));
-
-                byteSource.AddRange(byteState);
-                byteSource.AddRange(new byte[] { 1 });
-                byteSource.AddRange(byteCallbackId);
-                byteSource.AddRange(data);
-
-                data = byteSource.ToArray();
-                socketClient.Send(data);
-
-                sendCallbackList.Add(callbackId, action);
-                Task.Run(async delegate
+                lock (sendLock)
                 {
-                    await Task.Delay(sheep);
-                    if (sendCallbackList.ContainsKey(callbackId))
+                    int callbackId = sendCallbackList.Count;
+
+                    List<byte> byteSource = new List<byte>();
+                    byte[] byteState = Encoding.UTF8.GetBytes(state.ToString().PadLeft(3, '0'));
+                    byte[] byteCallbackId = Encoding.UTF8.GetBytes(callbackId.ToString().PadLeft(4, '0'));
+
+                    byteSource.AddRange(byteState);
+                    byteSource.AddRange(new byte[] { 1 });
+                    byteSource.AddRange(byteCallbackId);
+                    byteSource.AddRange(data);
+
+                    data = byteSource.ToArray();
+                    socketClient.Send(data);
+
+                    sendCallbackList.Add(callbackId, action);
+                    Task.Run(async delegate
                     {
-                        RemoveCallBack(callbackId);
-                        action(false, new byte[] { });
-                    }
-                });
-
-                return callbackId;
-            }
-            return -1;
-        }
-
-        /// <summary>
-        /// 连接服务器
-        /// </summary>
-        /// <returns></returns>
-        public bool Start()
-        {
-            try
-            {
-                if(socketClient.Connected)
-                {
-                    socketClient.Close();
+                        await Task.Delay(sheep);
+                        if (sendCallbackList.ContainsKey(callbackId))
+                        {
+                            action(false, new byte[] { });
+                            RemoveCallBack(callbackId);
+                        }
+                    });
                 }
-                
-                socketClient.Connect(iPEndPoint);
-                socketReceiveThread.Start();
-                isConnected = true;
+                return true;
             }
-            catch
-            {
-                return false;
-            }
-            return true;
+            return false;
         }
 
         /// <summary>
         /// 移出指定回调事件
         /// </summary>
         /// <param name="id"></param>
-        public void RemoveCallBack(int id)
+        private void RemoveCallBack(int id)
         {
             if (sendCallbackList.ContainsKey(id))
             {
                 sendCallbackList.Remove(id);
+            }
+        }
+
+        /// <summary>
+        /// 向服务器发送心跳包
+        /// </summary>
+        private void SocketHeart()
+        {
+            // 每分钟发送一个心跳包
+            while (socketConnect)
+            {
+                if (Send(100, Encoding.UTF8.GetBytes("hello"), SocketHeartCallBack))
+                {
+                    System.Diagnostics.Debug.WriteLine("发送成功");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("发送失败");
+                }
+                Thread.Sleep(60000);
+            }
+        }
+
+        private void SocketHeartCallBack(bool state, byte[] data)
+        {
+            if (!state)
+            {
+                Stop();
             }
         }
     }

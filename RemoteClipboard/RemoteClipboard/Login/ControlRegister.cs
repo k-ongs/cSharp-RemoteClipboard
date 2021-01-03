@@ -152,7 +152,7 @@ namespace RemoteClipboard.Login
             this.buttonVerify.AutoSize = false;
             this.buttonVerify.Width = 100;
             this.buttonVerify.Height = 22;
-            this.buttonVerify.BackColor = ClassStaticResources.mainColors;
+            this.buttonVerify.BackColor = ClassStatic.mainColors;
             this.buttonVerify.ForeColor = Color.White;
             this.buttonVerify.TextAlign = ContentAlignment.MiddleCenter;
             this.buttonVerify.Location = new Point(160, 5);
@@ -260,7 +260,7 @@ namespace RemoteClipboard.Login
 
             if (timeVerify == 0)
             {
-                buttonVerify.BackColor = ClassStaticResources.mainColors;
+                buttonVerify.BackColor = ClassStatic.mainColors;
                 buttonVerify.ForeColor = Color.White;
                 buttonVerify.Cursor = Cursors.Hand;
                 timerVerify.Stop();
@@ -284,17 +284,17 @@ namespace RemoteClipboard.Login
         /// <param name="e"></param>
         private void ButtonVerify_Click(object sender, EventArgs e)
         {
-            if (!ClassStaticResources.tcpClient.IsConnected || buttonVerify.Cursor == Cursors.No) return;
+            if (!ClassStatic.tcpClient.IsConnected || buttonVerify.Cursor == Cursors.No) return;
             string account = inputAccount.Text;
             if (FormLogin.formLogin != null)
             {
-                if (!ClassStaticResources.IsPhone(account))
+                if (!ClassStatic.IsPhone(account))
                 {
                     FormLogin.formLogin.TipsShow("请输入正确的手机号！");
                     return;
                 }
                 Action<bool, byte[]> action = new Action<bool, byte[]>(ButtonVerify_Callback);
-                int callback = ClassStaticResources.tcpClient.Send(104, System.Text.Encoding.UTF8.GetBytes(account), action);
+                int callback = ClassStatic.tcpClient.Send(104, System.Text.Encoding.UTF8.GetBytes(account), action);
 
             }
         }
@@ -348,14 +348,14 @@ namespace RemoteClipboard.Login
         /// <param name="e"></param>
         private void ButtonRegister_Click(object sender, EventArgs e)
         {
-            if (!ClassStaticResources.tcpClient.IsConnected) return;
+            if (!ClassStatic.tcpClient.IsConnected) return;
             string account = inputAccount.Text;
             string verify = inputVerify.Text;
             string password = inputPassword.Text;
 
             if(FormLogin.formLogin != null)
             {
-                if (!ClassStaticResources.IsPhone(account))
+                if (!ClassStatic.IsPhone(account))
                 {
                     FormLogin.formLogin.TipsShow("请输入正确的手机号再注册");
                     return;
@@ -365,7 +365,7 @@ namespace RemoteClipboard.Login
                     FormLogin.formLogin.TipsShow("请输入正确的验证码再注册");
                     return;
                 }
-                if (!ClassStaticResources.IsComplexPass(password))
+                if (!ClassStatic.IsComplexPass(password))
                 {
                     FormLogin.formLogin.TipsShow("请输入复杂密码再注册");
                     return;
@@ -373,7 +373,7 @@ namespace RemoteClipboard.Login
 
                 Action<bool, byte[]> action = new Action<bool, byte[]>(ButtonRegister_Callback);
                 ClassJsonConvertObject.PhonePass data = new ClassJsonConvertObject.PhonePass(account, password, verify);
-                ClassStaticResources.tcpClient.Send(105, System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)), action);
+                ClassStatic.tcpClient.Send(105, System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)), action);
             }
         }
         private void ButtonRegister_Callback(bool state, byte[] data)

@@ -83,6 +83,7 @@ namespace RemoteClipboard
             base.WndProc(ref m);
         }
         #endregion
+
         private Timer timerNetworkTest;
         private int menuButtonActive = 1;
         private ControlDeviceList deviceList = new ControlDeviceList();
@@ -99,15 +100,15 @@ namespace RemoteClipboard
             timerNetworkTest.Interval = 10000;
             timerNetworkTest.Start();
 
-            ClassStaticResources.tcpClient.OnServerCloseHandler += onServerCloseHandler;
-            ClassStaticResources.tcpClient.OnServerReceiveHandler += OnServerReceiveHandler;
-            ClassStaticResources.tcpClient.Start();
+            ClassStatic.tcpClient.OnServerCloseHandler += onServerCloseHandler;
+            ClassStatic.tcpClient.OnServerReceiveHandler += OnServerReceiveHandler;
+            ClassStatic.tcpClient.Start();
         }
         private void TimerNetworkTest_Tick(object sender, EventArgs e)
         {
-            if(!ClassStaticResources.tcpClient.IsConnected)
+            if(!ClassStatic.tcpClient.IsConnected)
             {
-                ClassStaticResources.tcpClient.Start();
+                ClassStatic.tcpClient.Start();
             }
         }
 
@@ -128,7 +129,7 @@ namespace RemoteClipboard
             formTemp.ShowDialog();
             formTemp.Dispose();
 
-            if (ClassStaticResources.password.Length < 6)
+            if (ClassStatic.password.Length < 6)
             {
                 this.Dispose();
                 this.Close();
@@ -136,13 +137,13 @@ namespace RemoteClipboard
             }
 
             this.Show();
-            if(ClassStaticResources.doNotDisturb)
+            if(ClassStatic.doNotDisturb)
             {
                 statusOnlineControl1.Status = 1;
             }
             
             panel1.Controls.Add(deviceList);
-            portraitBox1.Portrait = ClassStaticResources.portraitPid;
+            portraitBox1.Portrait = ClassStatic.portraitPid;
         }
 
         private void MenuButtn_MouseHover(object sender, EventArgs e)
