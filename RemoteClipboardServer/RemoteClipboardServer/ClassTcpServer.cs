@@ -44,7 +44,7 @@ namespace RemoteClipboardServer
         /// <param name="state">操作标识码</param>
         /// <param name="callback">回调返回ID</param>
         /// <param name="data">客户端发送的数据</param>
-        public delegate void onClientReceiveHandler(string token, int state, int callback, byte[] data);
+        public delegate void onClientReceiveHandler(string token, int state, string callback, byte[] data);
         /// <summary>
         /// 客户端信息处理事件
         /// </summary>
@@ -189,8 +189,7 @@ namespace RemoteClipboardServer
                         int state;
                         if (System.Int32.TryParse(System.Text.Encoding.UTF8.GetString(data.Take(3).ToArray()), out state))
                         {
-                            // 获取回调ID
-                            int callbackId = -1;
+                            string callbackId = "";
                             // 是否使用回调函数
                             uint isCallback = data[3];
                             // 截取数据
@@ -198,14 +197,8 @@ namespace RemoteClipboardServer
                             // 获取回调ID
                             if (isCallback == 1)
                             {
-                                if (System.Int32.TryParse(System.Text.Encoding.UTF8.GetString(data.Take(4).ToArray()), out callbackId))
-                                {
-                                    data = data.Skip(4).ToArray();
-                                }
-                                else
-                                {
-                                    callbackId = -1;
-                                }
+                                callbackId = ClassStatic.GetString(data.Take(32).ToArray());
+                                data = data.Skip(32).ToArray();
                             }
 
                             // 100是心跳检测包
@@ -297,13 +290,13 @@ namespace RemoteClipboardServer
                 socketClientList[token].socket.Send(data);
             }
         }
-        public void Send(string token, int state, int callbackId, byte[] data)
+        public void Send(string token, int state, string callbackId, byte[] data)
         {
             if (socketClientList.Keys.Contains(token) && socketClientList[token].socket != null)
             {
                 List<byte> byteSource = new List<byte>();
-                byte[] byteState = System.Text.Encoding.UTF8.GetBytes(state.ToString().PadLeft(3, '0'));
-                byte[] byteCallbackId = System.Text.Encoding.UTF8.GetBytes(callbackId.ToString().PadLeft(4, '0'));
+                byte[] byteState = ClassStatic.GetBytes(state.ToString().PadLeft(3, '0'));
+                byte[] byteCallbackId = ClassStatic.GetBytes(callbackId);
 
                 byteSource.AddRange(byteState);
                 byteSource.AddRange(new byte[] { 1 });

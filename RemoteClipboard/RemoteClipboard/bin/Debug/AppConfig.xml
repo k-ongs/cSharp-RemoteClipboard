@@ -1,13 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Root>
   <Config>
-    <test>123456</test>
-    <password>123123</password>
-    <savePassword>true</savePassword>
-    <automaticLogon>false</automaticLogon>
-    <portrait>5</portrait>
-    <notDisturb>true</notDisturb>
-    <account>12312312321</account>
-    <remember>true</remember>
+    <account>15213138243</account>
+    <password>z1234Xhq,</password>
+    <remember>false</remember>
+    <portrait>6</portrait>
   </Config>
+  <Software>
+    <turnOn>False</turnOn>
+    <parse>True</parse>
+    <copy>Ctrl + C</copy>
+    <paste>Alt + V</paste>
+    <screenshot>Ctrl + P</screenshot>
+    <color>Ctrl + L</color>
+    <cachePath>D:\java_e</cachePath>
+  </Software>
 </Root>

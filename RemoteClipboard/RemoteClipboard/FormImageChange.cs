@@ -153,7 +153,7 @@ namespace RemoteClipboard
                 ClassStatic.SetConfig("portrait", pictureSelect.Tag.ToString());
 
                 // 已经登录更改头像事件
-                if(ClassStatic.password != "")
+                if(ClassStatic.account != "")
                 {
 
                 }

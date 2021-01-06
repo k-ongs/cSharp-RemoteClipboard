@@ -8,3 +8,13 @@ C:\Users\16243\Desktop\c#大作业\画板\画板\obj\Debug\画板.csproj.Generat
 C:\Users\16243\Desktop\c#大作业\画板\画板\obj\Debug\画板.csproj.CoreCompileInputs.cache
 C:\Users\16243\Desktop\c#大作业\画板\画板\obj\Debug\画板.exe
 C:\Users\16243\Desktop\c#大作业\画板\画板\obj\Debug\画板.pdb
+D:\git\cSharp-\画板\画板\bin\Debug\画板.exe.config
+D:\git\cSharp-\画板\画板\bin\Debug\画板.exe
+D:\git\cSharp-\画板\画板\bin\Debug\画板.pdb
+D:\git\cSharp-\画板\画板\obj\Debug\画板.csprojAssemblyReference.cache
+D:\git\cSharp-\画板\画板\obj\Debug\画板.Form1.resources
+D:\git\cSharp-\画板\画板\obj\Debug\画板.Properties.Resources.resources
+D:\git\cSharp-\画板\画板\obj\Debug\画板.csproj.GenerateResource.cache
+D:\git\cSharp-\画板\画板\obj\Debug\画板.csproj.CoreCompileInputs.cache
+D:\git\cSharp-\画板\画板\obj\Debug\画板.exe
+D:\git\cSharp-\画板\画板\obj\Debug\画板.pdb

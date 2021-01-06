@@ -10,11 +10,14 @@ namespace RemoteClipboardServer
     static class ClassStatic
     {
         #region 公共变量声明
+
+        public static Object loginSuccessLock = new Object();
         public static FormMain formMain = null;
         /// <summary>
         /// 用户总数量
         /// </summary>
         public static int totalNumberOfUsers = 0;
+        public static int totalNumberOfUsersOnline = 0;
         /// <summary>
         /// 手机验证码有效时间
         /// </summary>
@@ -32,6 +35,8 @@ namespace RemoteClipboardServer
         /// 客户端列表
         /// </summary>
         public static Dictionary<string, Client> clientList = new Dictionary<string, Client>();
+        public static Dictionary<int, List<string>> clientOnlineList = new Dictionary<int, List<string>>();
+
         #endregion
 
         #region 公共结构体、类声明
@@ -40,8 +45,11 @@ namespace RemoteClipboardServer
         /// </summary>
         public struct Client
         {
+            public int uid;         // 用户ID
+            public int state;       // 在线状态
             public bool login;      // 是否登录
-            public bool state;      // 在线状态
+            public string mac;      // mac地址
+            public string bind;     // 绑定QQ
             public string phone;    // 手机号码
             public string verifies; // 手机验证码
             public DateTime effective; // 验证码有效时间
@@ -54,9 +62,9 @@ namespace RemoteClipboardServer
         {
             public Result(string ret = "", string msg = "", string data = "")
             {
-                this.ret = ret;
-                this.msg = ret;
-                this.data = ret;
+                this.ret = ret == null ? "" : ret;
+                this.msg = msg == null ? "" : msg;
+                this.data = data == null ? "" : data;
             }
             public string ret { get; set; }
             public string msg { get; set; }
@@ -68,15 +76,73 @@ namespace RemoteClipboardServer
         /// </summary>
         public class ClientData
         {
-            public ClientData(string str1 = "", string str2 = "", string str3 = "")
+            public ClientData(string str1 = "", string str2 = "", string str3 = "", string str4 = "")
             {
                 this.str1 = str1;
                 this.str2 = str2;
                 this.str3 = str3;
+                this.str4 = str4;
+
             }
             public string str1 { get; set; }
             public string str2 { get; set; }
             public string str3 { get; set; }
+            public string str4 { get; set; }
+        }
+
+        /// <summary>
+        /// 设备信息
+        /// </summary>
+        public class ListDrive
+        {
+            /// <summary>
+            /// mac地址
+            /// </summary>
+            public string mac { get; set; }
+            /// <summary>
+            /// 头像ID
+            /// </summary>
+            public string pid { get; set; }
+            /// <summary>
+            /// 设备名
+            /// </summary>
+            public string name { get; set; }
+            /// <summary>
+            /// 设备标识
+            /// </summary>
+            public string token { get; set; }
+            /// <summary>
+            /// 设备当前状态
+            /// </summary>
+            public int state { get; set; }
+        }
+
+        /// <summary>
+        /// 设备列表
+        /// </summary>
+        public class ListDriveData
+        {
+            public ListDriveData(string state, List<ListDrive> list)
+            {
+                this.state = state;
+                this.list = list;
+            }
+            public string state { get; set; }
+            public List<ListDrive> list { get; set; }
+        }
+
+        /// <summary>
+        /// 软件配置信息
+        /// </summary>
+        public class UserLoginSuccess
+        {
+            public string ret { get; set; }
+            public string bind { get; set; }
+            public string parse { get; set; }
+            public string copy { get; set; }
+            public string paste { get; set; }
+            public string screenshot { get; set; }
+            public string color { get; set; }
         }
         #endregion
 
@@ -161,6 +227,27 @@ namespace RemoteClipboardServer
         }
 
         /// <summary>
+        /// 获取二维码
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static byte[] HttpGetImage(string url)
+        {
+            byte[] data;
+            try
+            {
+                System.Net.WebClient webClient = new System.Net.WebClient();
+                webClient.Credentials = System.Net.CredentialCache.DefaultCredentials;
+                data = webClient.DownloadData(url);
+            }
+            catch
+            {
+                data = new byte[] { };
+            }
+            return data;
+        }
+
+        /// <summary>
         /// 获取6位随机验证码
         /// </summary>
         /// <returns></returns>
@@ -176,7 +263,7 @@ namespace RemoteClipboardServer
         /// </summary>
         /// <param name="result"></param>
         /// <returns></returns>
-        public static byte[] SetResultByte(Result result)
+        public static byte[] SetResultByte(object result)
         {
             string temp;
             try

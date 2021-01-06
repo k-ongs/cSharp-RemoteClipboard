@@ -11,7 +11,7 @@ namespace RemoteClipboardServer
         /// <summary>
         /// 用户登录
         /// </summary>
-        public static void Login(string token, int state, int callbackId, byte[] data)
+        public static void Login(string token, int state, string callbackId, byte[] data)
         {
             if (state == 101)
             {
@@ -22,13 +22,15 @@ namespace RemoteClipboardServer
                 {
                     if (ClassStatic.IsComplexPass(clientData.str2))
                     {
-                        System.Data.DataTable dataTable = ClassStatic.sqlServer.Field("*").Where("phone='" + clientData.str1 + "' and password='" + clientData.str2 + "'").Select("userInfo");
+                        System.Data.DataTable dataTable = ClassStatic.sqlServer.Field("*").Where("phone='" + clientData.str1 + "' and password='" + ClassStatic.Md5(clientData.str2) + "'").Select("userInfo");
                         if (dataTable.Rows.Count > 0)
                         {
                             ClassStatic.Client client = new ClassStatic.Client();
                             client.login = true;
-                            client.state = true;
+                            client.state = 0;
                             client.phone = clientData.str1;
+                            client.uid = Convert.ToInt32(dataTable.Rows[0][0]);
+                            client.bind = dataTable.Rows[0][3].ToString();
                             if (ClassStatic.clientList.ContainsKey(token))
                             {
                                 ClassStatic.clientList[token] = client;
@@ -66,7 +68,7 @@ namespace RemoteClipboardServer
         /// <param name="state"></param>
         /// <param name="callbackId"></param>
         /// <param name="data"></param>
-        public static void Register(string token, int state, int callbackId, byte[] data)
+        public static void Register(string token, int state, string callbackId, byte[] data)
         {
             if (state == 105)
             {
@@ -82,7 +84,7 @@ namespace RemoteClipboardServer
                     if (ClassStatic.IsComplexPass(clientData.str2))
                     {
                         // 验证码错误
-                        if (DateTime.Compare(client.effective, DateTime.Now) > 0 && clientData.str3 == client.verifies && client.phone != clientData.str1)
+                        if (DateTime.Compare(client.effective, DateTime.Now) > 0 && clientData.str3 == client.verifies && client.phone == clientData.str1)
                         {
                             System.Data.DataTable dataTable = ClassStatic.sqlServer.Field("*").Where("phone='" + clientData.str1 + "'").Select("userInfo");
                             if (dataTable.Rows.Count == 0)
@@ -132,7 +134,7 @@ namespace RemoteClipboardServer
         /// <summary>
         /// 发送手机验证码
         /// </summary>
-        public static void RegisterSendCode(string token, int state, int callbackId, byte[] data)
+        public static void RegisterSendCode(string token, int state, string callbackId, byte[] data)
         {
             if(state == 104)
             {
@@ -154,7 +156,7 @@ namespace RemoteClipboardServer
                     {
                         client = new ClassStatic.Client();
                         client.login = false;
-                        client.state = false;
+                        client.state = 2;
                     }
 
                     // 判断验证码是否过期
@@ -215,7 +217,7 @@ namespace RemoteClipboardServer
         /// <param name="state"></param>
         /// <param name="callbackId"></param>
         /// <param name="data"></param>
-        public static void RetrievePassword(string token, int state, int callbackId, byte[] data)
+        public static void RetrievePassword(string token, int state, string callbackId, byte[] data)
         {
             if (state == 107)
             {
@@ -231,7 +233,7 @@ namespace RemoteClipboardServer
                     if (ClassStatic.IsComplexPass(clientData.str2))
                     {
                         // 验证码错误
-                        if (DateTime.Compare(client.effective, DateTime.Now) > 0 && clientData.str3 == client.verifies && client.phone != clientData.str1)
+                        if (DateTime.Compare(client.effective, DateTime.Now) > 0 && clientData.str3 == client.verifies && client.phone == clientData.str1)
                         {
                             System.Data.DataTable dataTable = ClassStatic.sqlServer.Field("*").Where("phone='" + clientData.str1 + "'").Select("userInfo");
                             if (dataTable.Rows.Count > 0)
@@ -278,7 +280,7 @@ namespace RemoteClipboardServer
         /// <summary>
         /// 修改密码发送手机验证码
         /// </summary>
-        public static void RetrievePasswordSendCode(string token, int state, int callbackId, byte[] data)
+        public static void RetrievePasswordSendCode(string token, int state, string callbackId, byte[] data)
         {
             if (state == 106)
             {
@@ -299,7 +301,7 @@ namespace RemoteClipboardServer
                     {
                         client = new ClassStatic.Client();
                         client.login = false;
-                        client.state = false;
+                        client.state = 2;
                     }
 
                     // 判断验证码是否过期
@@ -353,5 +355,64 @@ namespace RemoteClipboardServer
             }
         }
 
+        /// <summary>
+        /// 获取二维码图片
+        /// </summary>
+        public static void QrcodeImage(string token, int state, string callbackId, byte[] data)
+        {
+            if (state == 102)
+            {
+                byte[] imageData =  ClassStatic.HttpGetImage(ClassStatic.urlApi + "qrcode.php?token=" + token);
+                // 向客户端返回处理结果
+                ClassStatic.tcpServer.Send(token, state, callbackId, imageData);
+            }
+        }
+
+        /// <summary>
+        /// 获取二维码状态
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="state"></param>
+        /// <param name="callbackId"></param>
+        /// <param name="data"></param>
+        public static void QrcodeImageState(string token, int state, string callbackId, byte[] data)
+        {
+            if (state == 103)
+            {
+                ClassStatic.Result resultData;
+                resultData = ClassStatic.HttpGet(ClassStatic.urlApi + "ptqrlogin.php?token=" + token);
+                System.Diagnostics.Debug.WriteLine(resultData.ret + " QQ: " + resultData.data);
+                if (resultData.ret == "0")
+                {
+                    //resultData.data
+                    System.Data.DataTable dataTable = ClassStatic.sqlServer.Field("uid,phone,binding").Where("binding='"+ resultData.data + "'").Select("userInfo");
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        ClassStatic.Client client = new ClassStatic.Client();
+                        client.login = true;
+                        client.state = 0;
+                        client.phone = dataTable.Rows[0][1].ToString();
+                        client.uid = Convert.ToInt32(dataTable.Rows[0][0]);
+                        client.bind = dataTable.Rows[0][2].ToString();
+                        if (ClassStatic.clientList.ContainsKey(token))
+                        {
+                            ClassStatic.clientList[token] = client;
+                        }
+                        else
+                        {
+                            ClassStatic.clientList.Add(token, client);
+                        }
+                        resultData.data = client.phone;
+                    }
+                    else
+                    {
+                        resultData.ret = "4";
+                        resultData.msg = "此QQ没有绑定账号";
+                    }
+                }
+                // 向客户端返回处理结果
+                ClassStatic.tcpServer.Send(token, state, callbackId, ClassStatic.SetResultByte(resultData));
+            }
+        }
     }
 }

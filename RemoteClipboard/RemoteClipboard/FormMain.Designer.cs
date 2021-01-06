@@ -39,14 +39,24 @@ namespace RemoteClipboard
             this.panel3 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.MenuNotify = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemOnline = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemtoolStripMenuItemNoData = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripTextBox2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.退出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusOnlineControl1 = new RemoteClipboard.ControlStatusOnline();
             this.portraitBox1 = new RemoteClipboard.ControlPortraitBox();
             this.controlBar1 = new RemoteClipboard.ControlBar();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.toolStripTextBox3 = new System.Windows.Forms.ToolStripTextBox();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.MenuNotify.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -145,6 +155,79 @@ namespace RemoteClipboard
             this.pictureBox2.TabIndex = 0;
             this.pictureBox2.TabStop = false;
             // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.ContextMenuStrip = this.MenuNotify;
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "远程剪贴板";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseClick);
+            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            // 
+            // MenuNotify
+            // 
+            this.MenuNotify.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemOnline,
+            this.toolStripMenuItemtoolStripMenuItemNoData,
+            this.toolStripTextBox2,
+            this.toolStripSeparator1,
+            this.toolStripTextBox1,
+            this.toolStripSeparator3,
+            this.退出ToolStripMenuItem});
+            this.MenuNotify.Name = "MenuNotify";
+            this.MenuNotify.Size = new System.Drawing.Size(137, 174);
+            // 
+            // toolStripMenuItemOnline
+            // 
+            this.toolStripMenuItemOnline.Margin = new System.Windows.Forms.Padding(1, 5, 1, 5);
+            this.toolStripMenuItemOnline.Name = "toolStripMenuItemOnline";
+            this.toolStripMenuItemOnline.Size = new System.Drawing.Size(136, 22);
+            this.toolStripMenuItemOnline.Text = "在线";
+            this.toolStripMenuItemOnline.Click += new System.EventHandler(this.toolStripMenuItemOnline_Click);
+            // 
+            // toolStripMenuItemtoolStripMenuItemNoData
+            // 
+            this.toolStripMenuItemtoolStripMenuItemNoData.Margin = new System.Windows.Forms.Padding(1, 5, 1, 5);
+            this.toolStripMenuItemtoolStripMenuItemNoData.Name = "toolStripMenuItemtoolStripMenuItemNoData";
+            this.toolStripMenuItemtoolStripMenuItemNoData.Size = new System.Drawing.Size(136, 22);
+            this.toolStripMenuItemtoolStripMenuItemNoData.Text = "勿扰";
+            this.toolStripMenuItemtoolStripMenuItemNoData.Click += new System.EventHandler(this.toolStripMenuItemtoolStripMenuItemNoData_Click);
+            // 
+            // toolStripTextBox2
+            // 
+            this.toolStripTextBox2.Margin = new System.Windows.Forms.Padding(1, 5, 1, 5);
+            this.toolStripTextBox2.Name = "toolStripTextBox2";
+            this.toolStripTextBox2.Size = new System.Drawing.Size(136, 22);
+            this.toolStripTextBox2.Text = "截屏";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(133, 6);
+            // 
+            // toolStripTextBox1
+            // 
+            this.toolStripTextBox1.Margin = new System.Windows.Forms.Padding(1, 5, 1, 5);
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(136, 22);
+            this.toolStripTextBox1.Text = "打开主界面";
+            this.toolStripTextBox1.Click += new System.EventHandler(this.toolStripTextBox1_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(133, 6);
+            // 
+            // 退出ToolStripMenuItem
+            // 
+            this.退出ToolStripMenuItem.Margin = new System.Windows.Forms.Padding(0, 5, 0, 5);
+            this.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem";
+            this.退出ToolStripMenuItem.Padding = new System.Windows.Forms.Padding(0);
+            this.退出ToolStripMenuItem.ShowShortcutKeys = false;
+            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(136, 20);
+            this.退出ToolStripMenuItem.Text = "退出";
+            this.退出ToolStripMenuItem.Click += new System.EventHandler(this.退出ToolStripMenuItem_Click);
+            // 
             // statusOnlineControl1
             // 
             this.statusOnlineControl1.BackColor = System.Drawing.Color.Transparent;
@@ -185,11 +268,12 @@ namespace RemoteClipboard
             this.controlBar1.TabIndex = 0;
             this.controlBar1.Title = "远程剪贴板";
             // 
-            // notifyIcon1
+            // toolStripTextBox3
             // 
-            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "远程剪贴板";
-            this.notifyIcon1.Visible = true;
+            this.toolStripTextBox3.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
+            this.toolStripTextBox3.Name = "toolStripTextBox3";
+            this.toolStripTextBox3.Size = new System.Drawing.Size(100, 23);
+            this.toolStripTextBox3.Text = "退出程序";
             // 
             // FormMain
             // 
@@ -213,11 +297,13 @@ namespace RemoteClipboard
             this.MinimumSize = new System.Drawing.Size(590, 420);
             this.Name = "FormMain";
             this.Text = "远程剪贴板";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.MenuNotify.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -236,5 +322,14 @@ namespace RemoteClipboard
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.ContextMenuStrip MenuNotify;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem 退出ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemOnline;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemtoolStripMenuItemNoData;
+        private System.Windows.Forms.ToolStripMenuItem toolStripTextBox2;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBox3;
+        private System.Windows.Forms.ToolStripMenuItem toolStripTextBox1;
     }
 }

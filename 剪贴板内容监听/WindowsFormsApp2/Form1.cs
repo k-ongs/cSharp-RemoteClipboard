@@ -13,6 +13,8 @@ namespace WindowsFormsApp2
 {
     public partial class Form1 : Form
     {
+        IntPtr nextClipboardViewer;
+
         public Form1()
         {
             InitializeComponent();
@@ -21,14 +23,27 @@ namespace WindowsFormsApp2
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            DateTime dt = DateTime.Now;
+            System.Diagnostics.Debug.WriteLine(dt.ToString("yyyy-MM-dd.HH:mm:ss"));
+            KeyboardHookNew keyboardHookNew = new KeyboardHookNew();
+            //keyboardHookNew.KeyUpEvent += keyboardHook_KeyUp;
+            ///keyboardHookNew.KeyPressEvent += keyboardHook_KeyUp;
+            keyboardHookNew.KeyDownEvent += keyboardHook_KeyUp;
+            keyboardHookNew.Start();
         }
-        IntPtr nextClipboardViewer;
 
-        /// <summary>
-        /// 要处理的 WindowsSystem.Windows.Forms.Message。
-        /// </summary>
-        /// <param name="m"></param>
+        void keyboardHook_KeyUp(object sender, KeyEventArgs e)
+        {
+
+            //e.KeyCode == Keys.Alt
+            string s1 = (e.KeyCode).ToString();
+            string s2 = e.Shift.ToString();
+            string s3 = e.Alt.ToString();
+            string s4 = e.Control.ToString();
+            System.Diagnostics.Debug.WriteLine(s1 + " " + s2 + " " + s3 + " " + s4);
+        }
+
+        private const int WM_PASTE = 0x302;
         protected override void WndProc(ref Message m)
         {
             // defined in winuser.h
@@ -39,7 +54,7 @@ namespace WindowsFormsApp2
             {
                 case WM_DRAWCLIPBOARD:
                     DisplayClipboardData();
-                    SendMessage(nextClipboardViewer, m.Msg, m.WParam, m.LParam);
+                    SendMessage(nextClipboardViewer, WM_PASTE, m.WParam, m.LParam);
                     break;
                 case WM_CHANGECBCHAIN:
                     if (m.WParam == nextClipboardViewer)
@@ -47,33 +62,32 @@ namespace WindowsFormsApp2
                     else
                         SendMessage(nextClipboardViewer, m.Msg, m.WParam, m.LParam);
                     break;
-                default:
-                    base.WndProc(ref m);
-                    break;
             }
+            base.WndProc(ref m);
         }
         /// <summary>
         /// 显示剪贴板内容
         /// </summary>
-        public void DisplayClipboardData()
+        private void DisplayClipboardData()
         {
             try
             {
-                IDataObject iData = new DataObject();
-                iData = Clipboard.GetDataObject();
-                if (iData.GetDataPresent(DataFormats.Rtf))
+                if (Clipboard.ContainsImage())
                 {
-                    richTextBox1.Rtf = (string)iData.GetData(DataFormats.Rtf);
-                    MessageBox.Show("检测到剪切板内容");
+                    richTextBox1.Text = "这是一张图片";
                 }
-                else if (iData.GetDataPresent(DataFormats.Text))
+                if (Clipboard.ContainsText())
                 {
-                    richTextBox1.Text = (string)iData.GetData(DataFormats.Text);
-                    MessageBox.Show("检测到剪切板内容");
+                    richTextBox1.Text = Clipboard.GetText();
                 }
-                else
+                if (Clipboard.ContainsFileDropList())
                 {
-                    MessageBox.Show("没有检测到粘贴板内容或粘贴板内容不是文本文件");
+                    foreach (string file in Clipboard.GetFileDropList())
+                    {
+                        //输出文件的全路径
+                        Console.WriteLine(file);
+                        richTextBox1.Text += file + "\n";
+                    }
                 }
             }
             catch (Exception e)
@@ -82,11 +96,6 @@ namespace WindowsFormsApp2
             }
         }
 
-        /// <summary>
-        /// 关闭程序，从观察链移除
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
             ChangeClipboardChain(Handle, nextClipboardViewer);
@@ -121,5 +130,10 @@ namespace WindowsFormsApp2
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText("test");
+        }
     }
 }

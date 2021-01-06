@@ -14,3 +14,38 @@ http://phone.xbear.vip/index.php?phone=15213138243&code=123456&time=5
 
 [操作标识][0][数据]
 [操作标识][1][回调函数标识][数据]
+
+
+二维码登录API
+http://phone.xbear.vip/qrcode.php?token=123456
+二维码登录状态API
+http://phone.xbear.vip/ptqrlogin.php?token=123456
+
+
+200     获取设备列表
+201     客户端上线
+202     客户端下线
+203     切换客户端状态
+
+204     绑定QQ二维码
+205     绑定QQ二维码状态
+206     解绑QQ二维码状态
+
+
+220     修改设置
+221     复制了一个文本
+
+
+
+
+
+
+
+
+快捷键
+
+300     复制
+301     粘贴
+302     截图
+303     取色
+

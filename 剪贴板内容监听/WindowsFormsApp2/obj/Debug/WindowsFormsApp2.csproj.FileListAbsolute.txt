@@ -18,3 +18,13 @@ C:\Users\16243\Desktop\WindowsFormsApp2\WindowsFormsApp2\obj\Debug\WindowsFormsA
 C:\Users\16243\Desktop\WindowsFormsApp2\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.csproj.CoreCompileInputs.cache
 C:\Users\16243\Desktop\WindowsFormsApp2\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.exe
 C:\Users\16243\Desktop\WindowsFormsApp2\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.pdb
+D:\git\cSharp-\剪贴板内容监听\WindowsFormsApp2\bin\Debug\WindowsFormsApp2.exe.config
+D:\git\cSharp-\剪贴板内容监听\WindowsFormsApp2\bin\Debug\WindowsFormsApp2.exe
+D:\git\cSharp-\剪贴板内容监听\WindowsFormsApp2\bin\Debug\WindowsFormsApp2.pdb
+D:\git\cSharp-\剪贴板内容监听\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.csprojAssemblyReference.cache
+D:\git\cSharp-\剪贴板内容监听\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.Form1.resources
+D:\git\cSharp-\剪贴板内容监听\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.Properties.Resources.resources
+D:\git\cSharp-\剪贴板内容监听\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.csproj.GenerateResource.cache
+D:\git\cSharp-\剪贴板内容监听\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.csproj.CoreCompileInputs.cache
+D:\git\cSharp-\剪贴板内容监听\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.exe
+D:\git\cSharp-\剪贴板内容监听\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.pdb

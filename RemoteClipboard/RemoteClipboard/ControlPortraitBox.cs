@@ -18,6 +18,10 @@ namespace RemoteClipboard
             get { return pid; }
             set {
                 pid = (value < 12 && value > -1) ? value : 0;
+                if(pictureBox9.Image != null)
+                {
+                    pictureBox9.Image.Dispose();
+                }
                 pictureBox9.Image = ClassStatic.GetPortraitImage(pid);
             }
         }

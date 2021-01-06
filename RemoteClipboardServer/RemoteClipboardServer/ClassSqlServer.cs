@@ -115,7 +115,9 @@ namespace RemoteClipboardServer
                     num = command.ExecuteNonQuery();
                     this.Close();
                 }
-                catch { }
+                catch(Exception e){
+                    System.Diagnostics.Debug.WriteLine(e.ToString());
+                }
             }
             return num;
         }

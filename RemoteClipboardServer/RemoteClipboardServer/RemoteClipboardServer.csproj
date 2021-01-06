@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassFormMainHandle.cs" />
     <Compile Include="ClassLoginHandle.cs" />
     <Compile Include="ClassSqlServer.cs" />
     <Compile Include="ClassStatic.cs" />

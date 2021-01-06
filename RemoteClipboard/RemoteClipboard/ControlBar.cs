@@ -83,9 +83,9 @@ namespace RemoteClipboard
 
         private void btn_close_Click(object sender, EventArgs e)
         {
-            if (Parent is FormMain)
+            if (Parent is Form)
             {
-                FormMain formTemp = (FormMain)Parent;
+                Form formTemp = (Form)Parent;
                 // 最小化到托盘
                 if (closeToPallet)
                 {

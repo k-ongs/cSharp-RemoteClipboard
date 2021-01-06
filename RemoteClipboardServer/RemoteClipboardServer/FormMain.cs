@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using System.IO;
 using System.Management;
 using System.Threading;
@@ -129,6 +130,17 @@ namespace RemoteClipboardServer
             ClassStatic.tcpServer.OnClientReceiveHandler += ClassLoginHandle.RegisterSendCode;
             ClassStatic.tcpServer.OnClientReceiveHandler += ClassLoginHandle.RetrievePassword;
             ClassStatic.tcpServer.OnClientReceiveHandler += ClassLoginHandle.RetrievePasswordSendCode;
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassLoginHandle.QrcodeImage;
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassLoginHandle.QrcodeImageState;
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.LoginSuccess; 
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.GetDeviceList; 
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.QrcodeBindImage; 
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.QrcodeBindImageState; 
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.QrcodeUnBindImageState; 
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.OnDeviceChangeState;
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.SettingChange; 
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.OnDriveClipboardDataTextHandler; 
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.OnDriveClipboardDataImageHandler;
         }
 
         /// <summary>
@@ -166,6 +178,7 @@ namespace RemoteClipboardServer
             }
 
             controlProgressBar1.Progress = ClassStatic.totalNumberOfUsers;
+            controlProgressBar2.Progress = ClassStatic.totalNumberOfUsersOnline;
         }
 
         /// <summary>
@@ -213,6 +226,11 @@ namespace RemoteClipboardServer
 
             button1.Enabled = true;
             button2.Enabled = false;
+            ClassStatic.totalNumberOfUsersOnline = 0;
+            controlProgressBar2.Progress = ClassStatic.totalNumberOfUsersOnline;
+
+            ClassStatic.clientList.Clear();
+            ClassStatic.clientOnlineList.Clear();
 
             textBox1.Text = "[系统] 关闭服务成功" + Environment.NewLine + textBox1.Text;
         }
@@ -234,6 +252,28 @@ namespace RemoteClipboardServer
         /// <param name="endPoint"></param>
         private void OnClientCloseHandler(string token)
         {
+            try
+            {
+                if (ClassStatic.clientList.ContainsKey(token))
+                {
+                    if (ClassStatic.clientOnlineList.ContainsKey(ClassStatic.clientList[token].uid))
+                    {
+                        ClassStatic.totalNumberOfUsersOnline--;
+                        List<string> clientOnlineList = ClassStatic.clientOnlineList[ClassStatic.clientList[token].uid];
+                        clientOnlineList.Remove(token);
+                        foreach (string tokenTemp in clientOnlineList)
+                        {
+                            ClassStatic.tcpServer.Send(tokenTemp, 202, ClassStatic.GetBytes(token));
+                        }
+                        ClassStatic.clientOnlineList[ClassStatic.clientList[token].uid] = clientOnlineList;
+                    }
+                    ClassStatic.clientList.Remove(token);
+                }
+            }
+            catch
+            {
+
+            }  
             ConsoleWrite("[系统] 客户端：" + token + "已断开连接！");
         }
     }

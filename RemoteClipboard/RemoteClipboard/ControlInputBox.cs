@@ -23,6 +23,8 @@ namespace RemoteClipboard
         {
             Enter += textBox_Enter;
             Leave += textBox_Leave;
+            ForeColor = Color.LightGray;
+            BorderStyle = BorderStyle.None;
             TextChanged += textBox_TextChanged;
         }
 

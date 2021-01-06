@@ -18,13 +18,20 @@ namespace RemoteClipboard
         // 服务器网络终结点
         private EndPoint iPEndPoint = null;
         // 发送信息锁
-        private Object sendLock = new Object();
+        private Object sendLock = new Object(); 
         // 接收服务端信息线程
         private Thread socketReceiveThread = null;
         // 向服务端发送心跳包线程
         private Thread socketHeartThread = null;
+        private Thread sendCallbackListClearThread = null;
         // 回调函数列表
-        private Dictionary<int, Action<bool, byte[]>> sendCallbackList = new Dictionary<int, Action<bool, byte[]>>();
+        private Dictionary<string, SendCallback> sendCallbackList = new Dictionary<string, SendCallback>();
+
+        struct SendCallback
+        {
+            public DateTime date;
+            public Action<bool, byte[]> action;
+        }
 
         /// <summary>
         /// 是否连接到服务器
@@ -61,7 +68,6 @@ namespace RemoteClipboard
                 {
                     socketConnect = true;
                     // 连接到服务器
-                    iPEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 6010);
                     socketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     socketClient.Connect(iPEndPoint);
                     // 开启服务端信息处理进程
@@ -72,9 +78,16 @@ namespace RemoteClipboard
                     socketHeartThread = new Thread(SocketHeart);
                     socketHeartThread.IsBackground = true;
                     socketHeartThread.Start();
+                    // 开启回调函数清除进程
+                    if(sendCallbackListClearThread == null)
+                    {
+                        sendCallbackListClearThread = new Thread(SendCallbackListClear);
+                        sendCallbackListClearThread.IsBackground = true;
+                        sendCallbackListClearThread.Start();
+                    }
                 }
             }
-            catch
+            catch(Exception e)
             {
                 socketConnect = false;
             }
@@ -91,7 +104,6 @@ namespace RemoteClipboard
                 socketConnect = false;
                 socketClient.Close();
                 socketClient.Dispose();
-                sendCallbackList.Clear();
             }
         }
 
@@ -128,22 +140,18 @@ namespace RemoteClipboard
                         int state;
                         if (Int32.TryParse(Encoding.UTF8.GetString(data.Take(3).ToArray()), out state))
                         {
-                            // 获取回调ID
-                            int callbackId = -1;
+                            // 是否使用回调函数
                             uint isCallback = data[3];
                             // 截取数据
                             data = data.Skip(4).ToArray();
                             if (isCallback == 1)
                             {
-                                if (System.Int32.TryParse(System.Text.Encoding.UTF8.GetString(data.Take(4).ToArray()), out callbackId))
+                                string token = ClassStatic.GetString(data.Take(32).ToArray());
+                                if (sendCallbackList.ContainsKey(token))
                                 {
-                                    // 回调函数是否存在
-                                    if (sendCallbackList.ContainsKey(callbackId))
-                                    {
-                                        data = data.Skip(4).ToArray();
-                                        sendCallbackList[callbackId](true, data);
-                                        sendCallbackList.Remove(callbackId);
-                                    }
+                                    data = data.Skip(32).ToArray();
+                                    sendCallbackList[token].action(true, data);
+                                    sendCallbackList.Remove(token);
                                 }
                                 // 丢弃错误回调ID的数据包
                             }
@@ -160,16 +168,15 @@ namespace RemoteClipboard
                 }
                 catch (SocketException ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.ToString());
                     // 断开连接
                     socketConnect = false;
-                    sendCallbackList.Clear();
                     // 断开与服务器的连接
                     OnServerCloseHandler?.Invoke();
                     return;
                 }
-                catch
+                catch(Exception ex)
                 {
+                    System.Diagnostics.Debug.WriteLine(ex.ToString());
                     // 其他错误
                 }
             }
@@ -183,45 +190,56 @@ namespace RemoteClipboard
         /// <param name="action"></param>
         public bool Send(int state, byte[] data, Action<bool, byte[]> action, int sheep = 2000)
         {
-            if (socketConnect && socketClient != null && data.Length < 999999999)
+            bool stateTemp = false;
+            lock (sendLock)
             {
-                lock (sendLock)
+                lock (ClassStatic.sendCallbackLock)
                 {
-                    int callbackId = sendCallbackList.Count;
-
-                    List<byte> byteSource = new List<byte>();
-                    byte[] byteState = Encoding.UTF8.GetBytes(state.ToString().PadLeft(3, '0'));
-                    byte[] byteCallbackId = Encoding.UTF8.GetBytes(callbackId.ToString().PadLeft(4, '0'));
-
-                    byteSource.AddRange(byteState);
-                    byteSource.AddRange(new byte[] { 1 });
-                    byteSource.AddRange(byteCallbackId);
-                    byteSource.AddRange(data);
-
-                    data = byteSource.ToArray();
-                    socketClient.Send(data);
-
-                    sendCallbackList.Add(callbackId, action);
-                    Task.Run(async delegate
+                    if (socketConnect && socketClient != null && data.Length < 999999999)
                     {
-                        await Task.Delay(sheep);
-                        if (sendCallbackList.ContainsKey(callbackId))
+                        // 为回调函数生成唯一标识
+                        string token = Guid.NewGuid().ToString().Replace("-", "");
+                        List<byte> byteSource = new List<byte>();
+                        byte[] byteState = Encoding.UTF8.GetBytes(state.ToString().PadLeft(3, '0'));
+
+                        byte[] byteCallbackId = Encoding.UTF8.GetBytes(token);
+
+                        byteSource.AddRange(byteState);
+                        byteSource.AddRange(new byte[] { 1 });
+                        byteSource.AddRange(byteCallbackId);
+                        byteSource.AddRange(data);
+
+                        data = byteSource.ToArray();
+
+                        try
                         {
-                            action(false, new byte[] { });
-                            RemoveCallBack(callbackId);
+                            socketClient.Send(data);
+
+                            SendCallback sendCallback = new SendCallback();
+                            sendCallback.date = DateTime.Now.AddMilliseconds(sheep);
+                            sendCallback.action = action;
+
+                            lock (ClassStatic.sendCallbackLock)
+                            {
+                                sendCallbackList.Add(token, sendCallback);
+                            }
+                            stateTemp = true;
                         }
-                    });
+                        catch
+                        {
+
+                        }
+                    }
                 }
-                return true;
-            }
-            return false;
+            }// sendLock锁
+            return stateTemp;
         }
 
         /// <summary>
         /// 移出指定回调事件
         /// </summary>
         /// <param name="id"></param>
-        private void RemoveCallBack(int id)
+        private void RemoveCallBack(string id)
         {
             if (sendCallbackList.ContainsKey(id))
             {
@@ -237,18 +255,30 @@ namespace RemoteClipboard
             // 每分钟发送一个心跳包
             while (socketConnect)
             {
-                if (Send(100, Encoding.UTF8.GetBytes("hello"), SocketHeartCallBack))
-                {
-                    System.Diagnostics.Debug.WriteLine("发送成功");
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("发送失败");
-                }
+                Send(100, Encoding.UTF8.GetBytes("hello"), SocketHeartCallBack);
                 Thread.Sleep(60000);
             }
         }
 
+        private void SendCallbackListClear()
+        {
+            while(true)
+            {
+                foreach (string token in sendCallbackList.Keys.ToArray())
+                {
+                    if (DateTime.Compare(sendCallbackList[token].date, DateTime.Now) < 0)
+                    {
+                        lock (ClassStatic.sendCallbackLock)
+                        {
+                            sendCallbackList[token].action(false, new byte[] { });
+                            System.Diagnostics.Debug.WriteLine("移出一个回调函数");
+                            RemoveCallBack(token);
+                        }
+                    }
+                }
+                Thread.Sleep(3000);
+            }
+        }
         private void SocketHeartCallBack(bool state, byte[] data)
         {
             if (!state)

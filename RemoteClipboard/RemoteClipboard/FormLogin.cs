@@ -1,29 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.ComponentModel;
-using System.Data;
+using System.Net;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 namespace RemoteClipboard
 {
     public partial class FormLogin : Form
     {
-        private int timerTipsNum = 3;
-        private Timer timerNetworkTest;
         public static FormLogin formLogin;
-        private Login.ControlPassLogin controlPassLogin = new Login.ControlPassLogin();
-        private Login.ControlScanLogin controlScanLogin = new Login.ControlScanLogin();
-        private Login.ControlRegister controlRegister = new Login.ControlRegister();
-        private Login.ControlForgetPass controlForgetPass = new Login.ControlForgetPass();
-        
-
-        public Animation animation = new Animation(10);
         #region 绘制窗体阴影
         [DllImport("dwmapi.dll")]
         public static extern int DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMarInset);
@@ -105,27 +92,6 @@ namespace RemoteClipboard
             formLogin = this;
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
-
-            timerNetworkTest = new Timer();
-            timerNetworkTest.Tick += TimerNetworkTest_Tick;
-            timerNetworkTest.Interval = 10000;
-            timerNetworkTest.Start();
-
-            TimerNetworkTest_Tick(null, null);
-        }
-
-        private void TimerNetworkTest_Tick(object sender, EventArgs e)
-        {
-            if (!ClassStatic.tcpClient.IsConnected)
-            {
-                labelTips.Text = "连接服务错误，正在重新连接...";
-                labelTips.Visible = true;
-            }
-            else
-            {
-                if(timerNetworkTest.Enabled == false)
-                    labelTips.Visible = false;
-            }
         }
 
         /// <summary>
@@ -136,20 +102,7 @@ namespace RemoteClipboard
         private void LoginForm_Load(object sender, EventArgs e)
         {
             labelSwitch_Click(labelPass, null);
-            controlScanLogin.Location = new Point(-260,0);
-            controlRegister.Location = new Point(260, 0);
-            controlForgetPass.Location = new Point(260, 0);
-            panelShow.Controls.Add(controlPassLogin);
-            panelShow.Controls.Add(controlScanLogin);
-            panelShow.Controls.Add(controlRegister);
-            panelShow.Controls.Add(controlForgetPass);
-
-            animation.Add(controlScanLogin);
-            animation.Add(controlPassLogin);
-            animation.Add(controlRegister);
-            animation.Add(controlForgetPass);
-
-            animation.Index = 1;
+            timerNetwork_Tick(null, null);
         }
 
         /// <summary>
@@ -174,161 +127,297 @@ namespace RemoteClipboard
         private void labelSwitch_Click(object sender, EventArgs e)
         {
             Label that = sender as Label;
-            if (that.Tag == null)
+            if (that.Tag == null && !timerLabelSwitch.Enabled)
             {
                 that.Tag = true;
                 if (that == labelScan)
                 {
-                    animation.Start(0);
                     labelPass.Tag = null;
                 }
                 else
                 {
-                    animation.Start(1);
                     labelScan.Tag = null;
                 }
                 labelSwitch_Paint(labelPass, null);
                 labelSwitch_Paint(labelScan, null);
+                timerLabelSwitch.Start();
             }
         }
 
         /// <summary>
-        /// 显示错误提示信息
+        /// 菜单切换动画
         /// </summary>
-        /// <param name="msg">提示信息</param>
-        public void TipsShow(string msg)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timerLabelSwitch_Tick(object sender, EventArgs e)
         {
-            labelTips.Tag = msg;
-            labelTips.Text = msg + "(" + timerTipsNum + ")";
-            labelTips.Visible = true;
-            timerTips.Start();
-        }
-
-        public void SwitchHide()
-        {
-            flowLayoutPanel1.Visible = false;
-        }
-        public void SwitchShow()
-        {
-            flowLayoutPanel1.Visible = true;
-        }
-
-        /// <summary>
-        /// 显示控件切换动画
-        /// </summary>
-        public class Animation : Timer
-        {
-            // 当前选中控件的下标
-            int index = 0;
-            // 动画任务队列
-            Queue taskList = new Queue();
-            // 控件列表
-            Dictionary<int, Control> controlList = new Dictionary<int, Control>();
-
-            public int Index
+            // labelScan.Tag为空，此时选中的密码登录
+            int x1 = controlPassLogin.Location.X;
+            int x2 = controlScanLogin.Location.X;
+            if (labelScan.Tag == null)
             {
-                get { return index; }
-                set { 
-                    if(value > -1 && value < controlList.Count)
-                    {
-                        index = value;
-                    }
-                }
+                x1 -= 15;
+                x2 -= 15;
+                x1 = (x1 < 0 ? 0 : x1);
+                controlPassLogin.Location = new Point(x1, 0);
+                controlScanLogin.Location = new Point(x2, 0);
             }
-            public Animation(int speed)
+            else
             {
-                this.Interval = speed;
-                this.Tick += Animation_Tick;
+                x1 += 15;
+                x2 += 15;
+                x2 = (x2 > 0 ? 0 : x2);
+                controlPassLogin.Location = new Point(x1, 0);
+                controlScanLogin.Location = new Point(x2, 0);
             }
-            /// <summary>
-            /// 添加控件
-            /// </summary>
-            /// <param name="control"></param>
-            public void Add(Control control)
+            if (x1 == 0 || x2 == 0)
             {
-                controlList.Add(controlList.Count, control);
-            }
-            /// <summary>
-            /// 切换控件至指定id控件
-            /// </summary>
-            /// <param name="i"></param>
-            public void Start(int i)
-            {
-                if (controlList.ContainsKey(i) && controlList.Count > 1)
+                if(labelScan.Tag == null)
                 {
-                    taskList.Enqueue(i);
-                    if (this.Enabled == false)
-                    {
-                        this.Start();
-                    }
-                }
-            }
-            /// <summary>
-            /// 计时器事件
-            /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="e"></param>
-            private void Animation_Tick(object sender, EventArgs e)
-            {
-                if(controlList.Count > 1 && taskList.Count > 0 && index != Convert.ToInt32(taskList.Peek()))
-                {
-                    // 获取控件宽度
-                    int width = controlList[index].Width;
-                    // 获取将要移入的目标下标
-                    int targetId = Convert.ToInt32(taskList.Peek());
-
-                    // 判断是否第一次，初始化目标位置
-                    if (controlList[index].Location.X == 0)
-                    {
-                        // 从右往左移入
-                        if (targetId > index)
-                        {
-                            controlList[targetId].Location = new Point(width, 0);
-                        }
-                        else
-                        {
-                            controlList[targetId].Location = new Point(-width, 0);
-                        }
-                    }
-                    // 设置偏移量
-                    int offset = (targetId > index) ? -15 : 15;
-                    int x1 = controlList[index].Location.X + offset;
-                    int x2 = controlList[targetId].Location.X + offset;
-
-                    // 防止控件移出窗体
-                    if (targetId > index)
-                    {
-                        x2 = x2 < 0 ? 0 : x2;
-                    }else
-                    {
-                        x2 = x2 > 0 ? 0 : x2;
-                    }
-                    controlList[index].Location = new Point(x1, 0);
-                    controlList[targetId].Location = new Point(x2, 0);
-
-                    // 移动完毕，更改当前显示ID，并将此ID移出队列
-                    if (x2 == 0)
-                    {
-                        index = Convert.ToInt32(taskList.Dequeue());
-                    }
+                    controlScanLogin.timerQrcode.Stop();
+                    controlPassLogin.InitializeControl();
                 }
                 else
                 {
-                    Stop();
+                    controlScanLogin.InitializeControl();
                 }
+                timerLabelSwitch.Stop();
             }
         }
 
-        private void timerTips_Tick(object sender, EventArgs e)
+        /// <summary>
+        ///  切换到用户注册界面动画
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TimerControlRegister_Tick(object sender, EventArgs e)
         {
-            if (timerTipsNum == 0)
+            int x1 = controlRegister.Location.X;
+            if (controlRegister.Tag != null)
             {
-                timerTipsNum = 3;
-                timerTips.Stop();
-                labelTips.Visible = false;
+                x1 += 15;
+                controlRegister.Location = new Point(x1, 0);
             }
-            string msg = labelTips.Tag.ToString();
-            labelTips.Text = msg + "(" + (--timerTipsNum) + ")";
+            else
+            {
+                x1 -= 15;
+                x1 = (x1 < 0 ? 0 : x1);
+                controlRegister.Location = new Point(x1, 0);
+            }
+
+            if (x1 == 0 || x1 > 260)
+            {
+                if (x1 >= 260)
+                {
+                    controlRegister.Tag = null;
+                }
+                else
+                {
+                    controlRegister.Tag = true;
+                }
+                controlRegister.InitializeControl();
+                timerControlRegister.Stop();
+            }
+        }
+
+        /// <summary>
+        /// 切换到找回密码界面动画
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TimerControlForgetPass_Tick(object sender, EventArgs e)
+        {
+            int x1 = controlForgetPass.Location.X;
+            if(controlForgetPass.Tag != null)
+            {
+                x1 += 15;
+                controlForgetPass.Location = new Point(x1, 0);
+            }
+            else
+            {
+                x1 -= 15;
+                x1 = (x1 < 0 ? 0 : x1);
+                controlForgetPass.Location = new Point(x1, 0);
+            }
+            if (x1 == 0 || x1 >= 260)
+            {
+                if(x1 >= 260)
+                {
+                    controlForgetPass.Tag = null;
+                }
+                else
+                {
+                    controlForgetPass.Tag = true;
+                }
+                controlForgetPass.InitializeControl();
+                timerControlForgetPass.Stop();
+            }
+        }
+
+        /// <summary>
+        /// 切换到加载界面动画
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timerControlLoading_Tick(object sender, EventArgs e)
+        {
+            int x1 = userControlLoading.Location.X;
+            if (userControlLoading.Tag != null)
+            {
+                x1 += 15;
+                userControlLoading.Location = new Point(x1, 0);
+            }
+            else
+            {
+                x1 -= 15;
+                x1 = (x1 < 0 ? 0 : x1);
+                userControlLoading.Location = new Point(x1, 0);
+            }
+            if (x1 == 0 || x1 >= 260)
+            {
+                if (x1 >= 260)
+                {
+                    userControlLoading.Tag = null;
+                }
+                else
+                {
+                    userControlLoading.Tag = true;
+                }
+                timerControlLoading.Stop();
+            }
+        }
+
+        /// <summary>
+        /// 每10秒检查一下网络连接情况
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timerNetwork_Tick(object sender, EventArgs e)
+        {
+            if(!ClassStatic.tcpClient.IsConnected)
+            {
+                LabelTipShow("与服务器断开连接，正在重新连接。。。", true, false);
+                if(ClassStatic.tcpClient.Start())
+                {
+                    labelTipShow.Visible = false;
+                }
+            }
+            else
+            {
+                labelTipShow.Visible = false;
+            }
+        }
+
+        /// <summary>
+        /// 显示提示信息
+        /// </summary>
+        /// <param name="msg">提示信息</param>
+        /// <param name="error">是否是错误信息</param>
+        /// <param name="await">是否自动消失</param>
+        public void LabelTipShow(string msg, bool error = true, bool await=true)
+        {
+            this.Invoke(new Action(() => {
+                if (error)
+                {
+                    labelTipShow.BackColor = Color.FromArgb(255, 240, 240);
+                }
+                else
+                {
+                    labelTipShow.BackColor = Color.FromArgb(168, 236, 186);
+                }
+                labelTipShow.Text = msg;
+                labelTipShow.Visible = true;
+
+                if (await) timerTipShow.Start();
+            }));
+            
+        }
+
+        /// <summary>
+        /// 提示信息自动隐藏定时器
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timerTipShow_Tick(object sender, EventArgs e)
+        {
+            labelTipShow.Visible = false;
+            timerTipShow.Stop();
+        }
+
+        /// <summary>
+        /// 登录成功，加载数据
+        /// </summary>
+        /// <param name="phone"></param>
+        public void LoginSuccess(string phone)
+        {
+
+            this.Invoke(new Action(() => {
+                timerControlLoading.Start();
+                if (!ClassStatic.IsPhone(phone))
+                {
+                    LabelTipShow("登录失败，登录账号格式有误", true);
+                    return;
+                }
+                ClassStatic.account = phone;
+
+                string name = Dns.GetHostName();
+                string mac = ClassStatic.GetMacByNetworkInterface();
+                Action<bool, byte[]> action = new Action<bool, byte[]>(SendMyOnline_Callback);
+                ClassStatic.ClientData clientData = new ClassStatic.ClientData(name, mac, ClassStatic.portraitPid.ToString());
+                ClassStatic.tcpClient.Send(201, ClassStatic.SetClientDataByte(clientData), action);
+            }));
+
+        }
+
+        /// <summary>
+        /// 上线信息响应回调处理
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="data"></param>
+        private void SendMyOnline_Callback(bool state, byte[] data)
+        {
+            this.Invoke(new Action(() => {
+                if (state)
+                {
+                    ClassStatic.UserLoginSuccess resultData = ClassStatic.GetLoginSuccessData(data);
+                    if (resultData != null && resultData.ret == "true")
+                    {
+                        ClassStatic.isLogined = true;
+                        ClassStatic.bind = resultData.bind;
+
+                        if (ClassStatic.GetConfigSoftware("turnOn") == "")
+                        {
+                            ClassStatic.SetConfigSoftware("turnOn", "False");
+                        }
+                        if (ClassStatic.GetConfigSoftware("parse") == "")
+                        {
+                            ClassStatic.SetConfigSoftware("parse", resultData.parse);
+                        }
+                        if (ClassStatic.GetConfigSoftware("copy") == "")
+                        {
+                            ClassStatic.SetConfigSoftware("copy", resultData.copy);
+                        }
+                        if (ClassStatic.GetConfigSoftware("paste") == "")
+                        {
+                            ClassStatic.SetConfigSoftware("paste", resultData.paste);
+                        }
+                        if (ClassStatic.GetConfigSoftware("screenshot") == "")
+                        {
+                            ClassStatic.SetConfigSoftware("screenshot", resultData.screenshot);
+                        }
+                        if (ClassStatic.GetConfigSoftware("color") == "")
+                        {
+                            ClassStatic.SetConfigSoftware("color", resultData.color);
+                        }
+
+                        FormLogin.formLogin.Close();
+                        return;
+                    }
+                }
+                ClassStatic.account = "";
+                LabelTipShow("登录失败，请稍后再试", true);
+            }));
+            
         }
     }
 }

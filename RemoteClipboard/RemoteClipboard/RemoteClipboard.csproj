@@ -12,6 +12,21 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -54,13 +69,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClassJsonConvertObject.cs" />
+    <Compile Include="ClassHotKey.cs" />
     <Compile Include="ClassTcpClient.cs" />
     <Compile Include="ControlBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ControlBar.Designer.cs">
       <DependentUpon>ControlBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ControlDevice.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ControlDevice.Designer.cs">
+      <DependentUpon>ControlDevice.cs</DependentUpon>
     </Compile>
     <Compile Include="ControlDeviceList.cs">
       <SubType>UserControl</SubType>
@@ -107,17 +128,53 @@
     <Compile Include="ControlPortraitBox.Designer.cs">
       <DependentUpon>ControlPortraitBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Login\UserControlLoading.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Login\UserControlLoading.Designer.cs">
+      <DependentUpon>UserControlLoading.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm\FormBindQQ.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm\FormBindQQ.Designer.cs">
+      <DependentUpon>FormBindQQ.cs</DependentUpon>
+    </Compile>
     <Compile Include="Login\ControlForgetPass.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Login\ControlForgetPass.Designer.cs">
+      <DependentUpon>ControlForgetPass.cs</DependentUpon>
     </Compile>
     <Compile Include="Login\ControlPassLogin.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Login\ControlPassLogin.Designer.cs">
+      <DependentUpon>ControlPassLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="Login\ControlRegister.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Login\ControlRegister.Designer.cs">
+      <DependentUpon>ControlRegister.cs</DependentUpon>
     </Compile>
     <Compile Include="Login\ControlScanLogin.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Login\ControlScanLogin.Designer.cs">
+      <DependentUpon>ControlScanLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm\FormEditPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm\FormEditPassword.Designer.cs">
+      <DependentUpon>FormEditPassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm\FormUnBindQQ.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm\FormUnBindQQ.Designer.cs">
+      <DependentUpon>FormUnBindQQ.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -141,6 +198,9 @@
     <EmbeddedResource Include="ControlBar.resx">
       <DependentUpon>ControlBar.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ControlDevice.resx">
+      <DependentUpon>ControlDevice.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ControlDeviceList.resx">
       <DependentUpon>ControlDeviceList.cs</DependentUpon>
     </EmbeddedResource>
@@ -161,6 +221,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPortraitBox.resx">
       <DependentUpon>ControlPortraitBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login\UserControlLoading.resx">
+      <DependentUpon>UserControlLoading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm\FormBindQQ.resx">
+      <DependentUpon>FormBindQQ.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login\ControlForgetPass.resx">
+      <DependentUpon>ControlForgetPass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login\ControlPassLogin.resx">
+      <DependentUpon>ControlPassLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login\ControlRegister.resx">
+      <DependentUpon>ControlRegister.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login\ControlScanLogin.resx">
+      <DependentUpon>ControlScanLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm\FormEditPassword.resx">
+      <DependentUpon>FormEditPassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm\FormUnBindQQ.resx">
+      <DependentUpon>FormUnBindQQ.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -273,7 +357,31 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="RemoteClipboard.ico" />
+    <None Include="Resources\system\loading.gif" />
+    <None Include="Resources\system\RemoteClipboardRed.ico" />
+    <None Include="Resources\system\qrcode.gif" />
+    <None Include="Resources\system\deviceType.png" />
+    <None Include="Resources\system\refresh.png" />
+    <None Include="Resources\system\RemoteClipboardNot.ico" />
+    <None Include="Resources\system\RemoteClipboard.ico" />
+    <None Include="Resources\system\qrcodeInvalid.png" />
     <None Include="Resources\system\qrcode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 和 x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
