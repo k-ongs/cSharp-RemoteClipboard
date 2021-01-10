@@ -1,5 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Root>
-  <Config />
-  <Software />
+  <Config>
+    <account>15213138243</account>
+    <password>z1234Xhq,</password>
+    <remember>false</remember>
+    <portrait>5</portrait>
+  </Config>
+  <Software>
+    <turnOn>False</turnOn>
+    <parse>True</parse>
+    <copy>Ctrl + C</copy>
+    <paste>Ctrl + V</paste>
+    <screenshot>Ctrl + P</screenshot>
+    <color>Ctrl + K</color>
+    <cachePath>D:\git\cSharp-\RemoteClipboard\RemoteClipboard\bin\Release\cache</cachePath>
+  </Software>
 </Root>

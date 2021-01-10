@@ -39,6 +39,7 @@ namespace RemoteClipboard.Login
                 buttonVerify.BackColor = ClassStatic.mainColors;
                 buttonVerify.ForeColor = Color.White;
                 buttonVerify.Cursor = Cursors.Hand;
+                buttonVerify.Text = "获取验证码";
                 timeVerify = 300;
                 timerVerify.Stop();
             }
@@ -63,6 +64,17 @@ namespace RemoteClipboard.Login
             inputVerify.Tips = "请输入验证码";
             inputPassword.Tips = "请输入至少8位的密码";
             inputAccount.Tips = "请输入手机号";
+
+            if(timerVerify != null && timerVerify.Enabled)
+            {
+                timerVerify.Stop();
+
+                buttonVerify.BackColor = ClassStatic.mainColors;
+                buttonVerify.ForeColor = Color.White;
+                buttonVerify.Cursor = Cursors.Hand;
+                buttonVerify.Text = "获取验证码";
+                timeVerify = 300;
+            }
         }
 
         /// <summary>

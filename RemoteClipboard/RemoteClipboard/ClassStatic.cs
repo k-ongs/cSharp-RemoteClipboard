@@ -95,6 +95,16 @@ namespace RemoteClipboard
             public string str3 { get; set; }
             public string str4 { get; set; }
         }
+        public class SendFileData
+        {
+            public SendFileData(string name, byte[] buffur)
+            {
+                this.name = name;
+                this.buffur = buffur;
+            }
+            public string name { get; set; }
+            public byte[] buffur { get; set; }
+        }
 
         public class ListDrive
         {
@@ -355,14 +365,27 @@ namespace RemoteClipboard
             }
             return temp;
         }
-        
+
+        public static ClientData GetClientData(byte[] data)
+        {
+            ClientData temp;
+            try
+            {
+                temp = JsonConvert.DeserializeObject<ClassStatic.ClientData>(ClassStatic.GetString(data));
+            }
+            catch
+            {
+                temp = null;
+            }
+            return temp;
+        }
 
         /// <summary>
         /// 将ClientData转为byte[]
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static byte[] SetClientDataByte(ClientData data)
+        public static byte[] SetClientDataByte(object data)
         {
             string temp;
             try

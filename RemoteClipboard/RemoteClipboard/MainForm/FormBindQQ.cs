@@ -115,7 +115,7 @@ namespace RemoteClipboard.MainForm
             {
                 this.Invoke(new Action(() => {
                     pictureQRcode.Image = image;
-                    labelTip.Text = "手机QQ扫码登录";
+                    labelTip.Text = "手机QQ扫码绑定";
                     timerQrcode.Start();
                 }));
             }

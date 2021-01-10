@@ -141,6 +141,8 @@ namespace RemoteClipboardServer
             ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.SettingChange; 
             ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.OnDriveClipboardDataTextHandler; 
             ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.OnDriveClipboardDataImageHandler;
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.OnDriveClipboardDataFileHandler;
+            ClassStatic.tcpServer.OnClientReceiveHandler += ClassFormMainHandle.OnDriveDeleteHandler;
         }
 
         /// <summary>

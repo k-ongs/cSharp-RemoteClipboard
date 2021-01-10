@@ -3,8 +3,11 @@ using System.IO;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Collections.Specialized;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace RemoteClipboard
 {
@@ -50,13 +53,6 @@ namespace RemoteClipboard
         /// <returns>消息处理的结果</returns>
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr WindowFromPoint(int x, int y);
-
-        //获取鼠标的位置
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern void GetCursorPos(ref Point p);
         #endregion
 
         private bool m_aeroEnabled;                     // variables for box shadow
@@ -138,75 +134,6 @@ namespace RemoteClipboard
         }
         #endregion
 
-        #region 键盘钩子
-        private const int VK_LALT = 0xA4;
-        private const int VK_RALT = 0xA5;
-        private const int VK_RSHIFT = 0xA1;
-        private const int VK_LSHIFT = 0xA0;
-        private const int VK_RCONTROL = 0x3;
-        private const int VK_CAPITAL = 0x14;
-        private const int VK_LCONTROL = 0xA2;
-        private const int WM_KEYDOWN = 0x100;
-        private const int WM_SYSKEYDOWN = 0x104;
-
-        public delegate int HookProc(int nCode, Int32 wParam, IntPtr lParam);
-
-        public const int WH_KEYBOARD_LL = 13;   // 全局键盘监听鼠标消息设为13
-        HookProc KeyboardHookProcedure; // 声明KeyboardHookProcedure作为HookProc类型
-        // 键盘结构
-        [StructLayout(LayoutKind.Sequential)]
-        public class KeyboardHookStruct
-        {
-            public int vkCode;  // 定一个虚拟键码。该代码必须有一个价值的范围1至254
-            public int scanCode; // 指定的硬件扫描码的关键
-            public int flags;  // 键标志
-            public int time; // 指定的时间戳记的这个讯息
-            public int dwExtraInfo; // 指定额外信息相关的信息
-        }
-
-        //使用此功能，安装了一个钩子
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern int SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hInstance, int threadId);
-
-        //调用此函数卸载钩子
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern bool UnhookWindowsHookEx(int idHook);
-
-        //使用此功能，通过信息钩子继续下一个钩子
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern int CallNextHookEx(int idHook, int nCode, Int32 wParam, IntPtr lParam);
-
-        //使用WINDOWS API函数代替获取当前实例的函数,防止钩子失效
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr GetModuleHandle(string name);
-
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        private static extern short GetKeyState(int vKey);
-
-        private int KeyboardHookProc(int nCode, Int32 wParam, IntPtr lParam)
-        {
-            // 侦听键盘事件
-            if ((nCode >= 0))
-            {
-                KeyboardHookStruct MyKeyboardHookStruct = (KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
-                bool control = ((GetKeyState(VK_LCONTROL) & 0x80) != 0) || ((GetKeyState(VK_RCONTROL) & 0x80) != 0);
-                bool shift = ((GetKeyState(VK_LSHIFT) & 0x80) != 0) || ((GetKeyState(VK_RSHIFT) & 0x80) != 0);
-                bool alt = ((GetKeyState(VK_LALT) & 0x80) != 0) || ((GetKeyState(VK_RALT) & 0x80) != 0);
-                bool capslock = (GetKeyState(VK_CAPITAL) != 0);
-                if (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN)
-                {
-                    KeyEventArgs e = new KeyEventArgs((Keys)(MyKeyboardHookStruct.vkCode | (control ? (int)Keys.Control : 0) | (shift ? (int)Keys.Shift : 0) | (alt ? (int)Keys.Alt : 0)));
-                    KeyboardHookKeyPaste(this, e);
-                }
-            }
-            return CallNextHookEx(hKeyboardHook, nCode, wParam, lParam);
-        }
-        #endregion
-
-        private int keyboardHookPaste = 0;
-        private string hookKeyPaste = "";
-        static int hKeyboardHook = 0; // 声明键盘钩子处理的初始值
         private IntPtr nextClipboardViewer;
         private int menuButtonActive = 1;
         public static FormMain formMain;
@@ -217,7 +144,6 @@ namespace RemoteClipboard
         {
             formMain = this;
             InitializeComponent();
-            KeyboardHookProcedure = new HookProc(KeyboardHookProc);
             nextClipboardViewer = (IntPtr)SetClipboardViewer((int)Handle);
             this.StartPosition = FormStartPosition.CenterScreen;
             notifyIcon1.Visible = false;
@@ -485,9 +411,6 @@ namespace RemoteClipboard
             }
 
             temp = ClassStatic.GetConfigSoftware("paste");
-            hookKeyPaste = temp;
-            hKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardHookProcedure, GetModuleHandle(System.Diagnostics.Process.GetCurrentProcess().MainModule.ModuleName), 0);
-
             tempkey = GetShortcutKey(temp, ClassHotKey.KeyModifiers.Ctrl, Keys.V);
             if (tempkey.key1 != ClassHotKey.KeyModifiers.Ctrl || tempkey.key2 != Keys.V)
             {
@@ -508,8 +431,6 @@ namespace RemoteClipboard
         /// </summary>
         public void UndoShortcutkeyHandRegister()
         {
-            if(hKeyboardHook != 0)
-                UnhookWindowsHookEx(hKeyboardHook);
             ClassHotKey.UnregisterHotKey(Handle, ClassStatic.ShortcutKey.Copy);
             ClassHotKey.UnregisterHotKey(Handle, ClassStatic.ShortcutKey.Paste);
             ClassHotKey.UnregisterHotKey(Handle, ClassStatic.ShortcutKey.Screenshot);
@@ -557,7 +478,6 @@ namespace RemoteClipboard
             return new ClassStatic.ShortcutKeys(key1, key2);
         }
 
-
         /// <summary>
         /// 快捷键注册执行事件
         /// </summary>
@@ -568,63 +488,17 @@ namespace RemoteClipboard
             {
                 case ClassStatic.ShortcutKey.Copy:
                     SendKeys.Send("^c");
-                    System.Diagnostics.Debug.WriteLine("复制");
                     break;
                 case ClassStatic.ShortcutKey.Paste:
                     SendKeys.Send("^v");
-                    System.Diagnostics.Debug.WriteLine("粘贴1");
                     break;
                 case ClassStatic.ShortcutKey.Screenshot:
-                    System.Diagnostics.Debug.WriteLine("截图");
+                    toolStripTextBox2_Click(null, null);
                     break;
                 case ClassStatic.ShortcutKey.Color:
-                    System.Diagnostics.Debug.WriteLine("取色");
+                    FormColorSelection formTemp = new FormColorSelection();
+                    formTemp.ShowDialog();
                     break;
-            }
-        }
-
-        /// <summary>
-        /// 快捷键事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void KeyboardHookKeyPaste(object sender, KeyEventArgs e)
-        {
-            string key1, key2 = "", key3="";
-            key1 = e.Alt ? "Alt" : e.Shift ? "Shift" : e.Control ? "Ctrl" : "";
-
-            if (e.KeyCode != Keys.None && e.KeyCode != Keys.ShiftKey && e.KeyCode != Keys.ControlKey && e.KeyCode != Keys.Menu)
-            {
-                key2 = e.KeyCode.ToString();
-            }
-            if (key1 != "" && key2 != "")
-            {
-                key3 = key1 + " + " + key2;
-            }
-            else
-            {
-                if (key1 != "")
-                {
-                    key3 = key1;
-                }
-                if (key2 != "")
-                {
-                    key3 = key2;
-                }
-            }
-            if(key3 != "" && key3 == hookKeyPaste)
-            {
-                if(keyboardHookPaste == 0)
-                {
-                    OnUserPasteHandler();
-                    keyboardHookPaste++;
-                }
-                else
-                {
-                    keyboardHookPaste = 0;
-                }
-                
-                
             }
         }
 
@@ -635,7 +509,7 @@ namespace RemoteClipboard
         {
             if (ClassStatic.isLogined)
             {
-                if(ClassStatic.isRemoteClipboardData < 1)
+                if (ClassStatic.isRemoteClipboardData < 1)
                 {
                     if (Clipboard.ContainsImage())
                     {
@@ -644,14 +518,65 @@ namespace RemoteClipboard
                     }
                     if (Clipboard.ContainsText())
                     {
+                        if (ClassStatic.GetConfigSoftware("parse") == "True")
+                        {
+                            string url = Clipboard.GetText();
+                            string path = ClassStatic.GetConfigSoftware("cachePath");
+                            MatchCollection mc = Regex.Matches(url, @"^http://(.*?)\.\w+$");
+                            if (mc.Count > 0)
+                            {
+                                string filename = "";
+                                try
+                                {
+                                    Uri uri = new Uri(url);
+                                    filename = System.Web.HttpUtility.UrlDecode(uri.Segments.Last());
+                                }
+                                catch{}
+                                if(filename!="")
+                                {
+                                    path += "\\" + filename;
+                                    FormDownload temp = new FormDownload(url, path);
+                                    temp.Show();
+                                }   
+                            }
+                        }
                         Action<bool, byte[]> action = new Action<bool, byte[]>(ClipboardData_Callback);
                         ClassStatic.tcpClient.Send(221, ClassStatic.GetBytes(Clipboard.GetText()), action);
                     }
                     if (Clipboard.ContainsFileDropList())
                     {
-                        foreach (string file in Clipboard.GetFileDropList())
+                        if (Clipboard.GetFileDropList().Count == 1)
                         {
-                            //Console.WriteLine(file);
+                            string file = Clipboard.GetFileDropList()[0];
+                            if (File.Exists(file) == true)
+                            {
+                                byte[] buffur = { };
+                                using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read))
+                                {
+                                    try
+                                    {
+                                        buffur = new byte[fs.Length];
+                                        fs.Read(buffur, 0, (int)fs.Length);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw ex;
+                                    }
+                                }
+                                string fileName = Path.GetFileName(file);
+                                Action<bool, byte[]> action = new Action<bool, byte[]>(ClipboardData_Callback);
+
+                                List<byte> byteSource = new List<byte>();
+
+                                byte[] fileNameByte = ClassStatic.GetBytes(fileName);
+                                byte[] fileNameByteLenth = ClassStatic.GetBytes(fileNameByte.Length.ToString());
+                                byteSource.AddRange(new byte[] { Convert.ToByte(fileNameByteLenth.Length) });
+                                byteSource.AddRange(fileNameByteLenth);
+                                byteSource.AddRange(fileNameByte);
+                                byteSource.AddRange(buffur);
+
+                                ClassStatic.tcpClient.Send(223, byteSource.ToArray(), action);
+                            }
                         }
                     }
                 }
@@ -679,43 +604,6 @@ namespace RemoteClipboard
             UndoShortcutkeyHandRegister();
         }
 
-        /// <summary>
-        /// 当用户使用粘贴的时候处理事件
-        /// </summary>
-        private void OnUserPasteHandler()
-        {
-            if (Clipboard.ContainsImage())
-            {
-                Bitmap bmp = new Bitmap(Clipboard.GetImage());
-
-                string path = ClassStatic.GetConfigSoftware("cachePath");
-                if (Directory.Exists(path) == false)
-                {
-                    path = System.Environment.CurrentDirectory + "\\cache";
-                    Directory.CreateDirectory(path);
-                    ClassStatic.SetConfigSoftware("cachePath", path);
-                }
-
-                path += "\\img";
-                if (Directory.Exists(path) == false)
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                path += "\\" + DateTime.Now.ToString("yyyy-MM-dd.HHmmss") + ".png";
-                bmp.Save(path, Clipboard.GetImage().RawFormat);
-                StringCollection file = new StringCollection();
-                file.Add(path);
-                Clipboard.SetFileDropList(file);
-                bmp.Dispose();
-            }
-
-            if (ClassStatic.GetConfigSoftware("parse") == "True")
-            {
-
-            }
-            System.Diagnostics.Debug.WriteLine("粘贴2");
-        }
 
         /// <summary>
         /// 远程发送剪贴板中含有文字
@@ -734,10 +622,85 @@ namespace RemoteClipboard
             if (state == 222)
             {
                 this.Invoke(new Action(() => {
+                    Bitmap bmp = new Bitmap(Clipboard.GetImage());
+                    string path = ClassStatic.GetConfigSoftware("cachePath");
+                    if (Directory.Exists(path) == false)
+                    {
+                        path = System.Environment.CurrentDirectory + "\\cache";
+                        Directory.CreateDirectory(path);
+                        ClassStatic.SetConfigSoftware("cachePath", path);
+                    }
+                    path += "\\img";
+                    if (Directory.Exists(path) == false)
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
+                    path += "\\" + DateTime.Now.ToString("yyyy-MM-dd.HHmmss") + ".png";
+                    bmp.Save(path, Clipboard.GetImage().RawFormat);
+                    StringCollection file = new StringCollection();
+                    file.Add(path);
                     ClassStatic.isRemoteClipboardData = 2;
-                    Clipboard.SetImage(ClassStatic.GetImageByBytes(data));
+                    Clipboard.SetFileDropList(file);
+                    bmp.Dispose();
                 }));
             }
+            if(state == 223)
+            {
+                string fileName = "";
+
+                try
+                {
+                    int lenth = Convert.ToInt32(ClassStatic.GetString(data.Skip(1).Take(data[0]).ToArray()));
+                    data = data.Skip(data[0] + 1).ToArray();
+                    fileName = ClassStatic.GetString(data.Take(lenth).ToArray());
+                    data = data.Skip(lenth).ToArray();
+                }
+                catch
+                {
+
+                }
+                
+                if (fileName != "")
+                {
+                    this.Invoke(new Action(() => {
+                        string path = ClassStatic.GetConfigSoftware("cachePath");
+                        if (Directory.Exists(path) == false)
+                        {
+                            path = System.Environment.CurrentDirectory + "\\cache";
+                            Directory.CreateDirectory(path);
+                            ClassStatic.SetConfigSoftware("cachePath", path);
+                        }
+                        path += "\\" + fileName;
+
+                        System.Diagnostics.Debug.WriteLine(path);
+                        FileStream fs = new FileStream(path, FileMode.Create);
+
+                        System.Diagnostics.Debug.WriteLine(data.Length);
+                        fs.Write(data, 0, data.Length);
+                        fs.Close();
+
+                        StringCollection file = new StringCollection();
+                        file.Add(path);
+                        ClassStatic.isRemoteClipboardData = 2;
+                        Clipboard.SetFileDropList(file);
+                        System.Diagnostics.Debug.WriteLine(Clipboard.GetFileDropList().Count);
+                    }));
+                }
+            }
+            if(state == 238)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    FormMain.formMain.deviceList.InitializeDeviceList();
+                }));
+            }
+        }
+
+        private void toolStripTextBox2_Click(object sender, EventArgs e)
+        {
+            FormScreenshot formTemp = new FormScreenshot();
+            formTemp.ShowDialog();
         }
     }
 }

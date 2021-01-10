@@ -127,8 +127,8 @@ namespace RemoteClipboard
                 formBindQQ.Dispose();
                 if (ClassStatic.bind == "")
                 {
-                    textBindNumber.Text = "绑定QQ";
-                    buttonBindQQ.Text = "等待绑定";
+                    textBindNumber.Text = "等待绑定";
+                    buttonBindQQ.Text = "绑定QQ";
                 }
             }
         }

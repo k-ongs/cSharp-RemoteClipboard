@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Root>
   <Config>
-    <account>15213138243</account>
-    <password>z1234Xhq,</password>
+    <account>15213138248</account>
+    <password>asdf1234</password>
     <remember>false</remember>
     <portrait>6</portrait>
   </Config>
@@ -12,7 +12,7 @@
     <copy>Ctrl + C</copy>
     <paste>Alt + V</paste>
     <screenshot>Ctrl + P</screenshot>
-    <color>Ctrl + L</color>
+    <color>Ctrl + K</color>
     <cachePath>D:\java_e</cachePath>
   </Software>
 </Root>

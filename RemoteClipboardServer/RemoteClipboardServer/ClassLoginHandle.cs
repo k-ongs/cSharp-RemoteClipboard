@@ -160,7 +160,7 @@ namespace RemoteClipboardServer
                     }
 
                     // 判断验证码是否过期
-                    if (client.effective == null || DateTime.Compare(client.effective, dateTimeNow) < 0)
+                    if (client.effective == null || client.phone != phone || (DateTime.Compare(client.effective, dateTimeNow) < 0))
                     {
                         // 设置手机号
                         client.phone = phone;

@@ -125,6 +125,7 @@ namespace RemoteClipboard
                         foreach (ClassStatic.ListDrive drive in listDriveData.list)
                         {
                             ControlDevice temp = new ControlDevice();
+                            temp.DeviceId = drive.mac;
                             temp.Title = drive.name;
                             temp.Mac = drive.mac;
                             temp.Portrait = Convert.ToInt32(drive.pid);

@@ -29,12 +29,16 @@ namespace RemoteClipboard
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.labelName = new System.Windows.Forms.Label();
             this.labelMac = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.controlStatusOnline = new RemoteClipboard.ControlStatusOnline();
             this.controlPortraitBox = new RemoteClipboard.ControlPortraitBox();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // labelName
@@ -101,11 +105,27 @@ namespace RemoteClipboard
             this.controlPortraitBox.MouseLeave += new System.EventHandler(this.ControlDevice_MouseLeave);
             this.controlPortraitBox.MouseHover += new System.EventHandler(this.ControlDevice_MouseHover);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 58);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Margin = new System.Windows.Forms.Padding(0, 5, 0, 5);
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteToolStripMenuItem.Text = "删除";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
             // ControlDevice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.ContextMenuStrip = this.contextMenuStrip1;
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.controlStatusOnline);
             this.Controls.Add(this.labelMac);
@@ -121,6 +141,7 @@ namespace RemoteClipboard
             this.MouseLeave += new System.EventHandler(this.ControlDevice_MouseLeave);
             this.MouseHover += new System.EventHandler(this.ControlDevice_MouseHover);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -132,5 +153,7 @@ namespace RemoteClipboard
         private System.Windows.Forms.Label labelMac;
         private ControlStatusOnline controlStatusOnline;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

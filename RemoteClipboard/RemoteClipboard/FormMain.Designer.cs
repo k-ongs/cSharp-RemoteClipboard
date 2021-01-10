@@ -175,13 +175,13 @@ namespace RemoteClipboard
             this.toolStripSeparator3,
             this.退出ToolStripMenuItem});
             this.MenuNotify.Name = "MenuNotify";
-            this.MenuNotify.Size = new System.Drawing.Size(137, 174);
+            this.MenuNotify.Size = new System.Drawing.Size(181, 196);
             // 
             // toolStripMenuItemOnline
             // 
             this.toolStripMenuItemOnline.Margin = new System.Windows.Forms.Padding(1, 5, 1, 5);
             this.toolStripMenuItemOnline.Name = "toolStripMenuItemOnline";
-            this.toolStripMenuItemOnline.Size = new System.Drawing.Size(136, 22);
+            this.toolStripMenuItemOnline.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemOnline.Text = "在线";
             this.toolStripMenuItemOnline.Click += new System.EventHandler(this.toolStripMenuItemOnline_Click);
             // 
@@ -189,7 +189,7 @@ namespace RemoteClipboard
             // 
             this.toolStripMenuItemtoolStripMenuItemNoData.Margin = new System.Windows.Forms.Padding(1, 5, 1, 5);
             this.toolStripMenuItemtoolStripMenuItemNoData.Name = "toolStripMenuItemtoolStripMenuItemNoData";
-            this.toolStripMenuItemtoolStripMenuItemNoData.Size = new System.Drawing.Size(136, 22);
+            this.toolStripMenuItemtoolStripMenuItemNoData.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemtoolStripMenuItemNoData.Text = "勿扰";
             this.toolStripMenuItemtoolStripMenuItemNoData.Click += new System.EventHandler(this.toolStripMenuItemtoolStripMenuItemNoData_Click);
             // 
@@ -197,26 +197,27 @@ namespace RemoteClipboard
             // 
             this.toolStripTextBox2.Margin = new System.Windows.Forms.Padding(1, 5, 1, 5);
             this.toolStripTextBox2.Name = "toolStripTextBox2";
-            this.toolStripTextBox2.Size = new System.Drawing.Size(136, 22);
+            this.toolStripTextBox2.Size = new System.Drawing.Size(180, 22);
             this.toolStripTextBox2.Text = "截屏";
+            this.toolStripTextBox2.Click += new System.EventHandler(this.toolStripTextBox2_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(133, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // toolStripTextBox1
             // 
             this.toolStripTextBox1.Margin = new System.Windows.Forms.Padding(1, 5, 1, 5);
             this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(136, 22);
+            this.toolStripTextBox1.Size = new System.Drawing.Size(180, 22);
             this.toolStripTextBox1.Text = "打开主界面";
             this.toolStripTextBox1.Click += new System.EventHandler(this.toolStripTextBox1_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(133, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // 退出ToolStripMenuItem
             // 
@@ -224,7 +225,7 @@ namespace RemoteClipboard
             this.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem";
             this.退出ToolStripMenuItem.Padding = new System.Windows.Forms.Padding(0);
             this.退出ToolStripMenuItem.ShowShortcutKeys = false;
-            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(136, 20);
+            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(180, 20);
             this.退出ToolStripMenuItem.Text = "退出";
             this.退出ToolStripMenuItem.Click += new System.EventHandler(this.退出ToolStripMenuItem_Click);
             // 

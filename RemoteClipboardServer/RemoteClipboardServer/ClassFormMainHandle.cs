@@ -469,6 +469,102 @@ namespace RemoteClipboardServer
             }
         }
 
+        /// <summary>
+        /// 剪贴板文件数据共享
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="state"></param>
+        /// <param name="callbackId"></param>
+        /// <param name="data"></param>
+        public static void OnDriveClipboardDataFileHandler(string token, int state, string callbackId, byte[] data)
+        {
+            if (state == 223)
+            {
+                if (ClassStatic.clientList.ContainsKey(token))
+                {
+                    ClassStatic.Client client = ClassStatic.clientList[token];
+
+                    /// 获取在线设备列表
+                    List<string> clientOnlineList;
+                    if (ClassStatic.clientOnlineList.ContainsKey(client.uid))
+                    {
+                        clientOnlineList = ClassStatic.clientOnlineList[client.uid];
+                    }
+                    else
+                    {
+                        clientOnlineList = new List<string>();
+                    }
+                    // 向其它客户端发送信息
+                    foreach (string tokenTemp in clientOnlineList)
+                    {
+                        if (token != tokenTemp)
+                        {
+                            ClassStatic.tcpServer.Send(tokenTemp, state, data);
+                        }
+                    }
+                }
+                // 向客户端返回处理结果
+                ClassStatic.tcpServer.Send(token, state, callbackId, ClassStatic.GetBytes("发送成功"));
+            }
+        }
+
+
+        /// <summary>
+        /// 客户端删除设备
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="state"></param>
+        /// <param name="callbackId"></param>
+        /// <param name="data"></param>
+        public static void OnDriveDeleteHandler(string token, int state, string callbackId, byte[] data)
+        {
+            if (state == 238)
+            {
+                ClassStatic.Result resultData = new ClassStatic.Result();
+                resultData.ret = "false";
+
+                // 判断设备信息是否存在
+                if (ClassStatic.clientList.ContainsKey(token))
+                {
+                    // 解析客户端提交的数据
+                    ClassStatic.ClientData clientData = ClassStatic.GetClientData(data);
+                    // 判断提交的信息是否存在
+                    if (clientData.str1 != "")
+                    {
+                        string mac = clientData.str1;
+                        // 获取设备信息
+                        ClassStatic.Client client = ClassStatic.clientList[token];
+
+                        if(ClassStatic.sqlServer.Where("uid='" + client.uid + "' and mac='" + mac + "'").Delete("userDevice") > 0)
+                        {
+                            // 删除成功
+                            /// 获取在线设备列表
+                            List<string> clientOnlineList;
+                            if (ClassStatic.clientOnlineList.ContainsKey(client.uid))
+                            {
+                                clientOnlineList = ClassStatic.clientOnlineList[client.uid];
+                            }
+                            else
+                            {
+                                clientOnlineList = new List<string>();
+                            }
+                            
+                            foreach (string tokenTemp in clientOnlineList)
+                            {
+                                if(tokenTemp != token && ClassStatic.clientList[tokenTemp].mac != mac)
+                                {
+                                    ClassStatic.tcpServer.Send(tokenTemp, 238, ClassStatic.GetBytes("有设备被删除"));
+                                }
+                            }
+                            resultData.ret = "true";
+                        }
+                    }
+                }
+                // 向客户端返回处理结果
+                ClassStatic.tcpServer.Send(token, state, callbackId, ClassStatic.SetResultByte(resultData));
+            }
+        }
+
 
     }
 }

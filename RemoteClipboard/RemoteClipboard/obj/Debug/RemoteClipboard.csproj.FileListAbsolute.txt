@@ -49,3 +49,5 @@ D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.csproj.
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.exe
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.pdb
 D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.csprojAssemblyReference.cache
+D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.FormScreenshot.resources
+D:\git\cSharp-\RemoteClipboard\RemoteClipboard\obj\Debug\RemoteClipboard.FormColorSelection.resources

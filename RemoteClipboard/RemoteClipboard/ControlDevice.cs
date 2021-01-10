@@ -68,5 +68,30 @@ namespace RemoteClipboard
         {
             if(!Oneself) BackColor = Color.White;
         }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(Status == 0)
+            {
+                MessageBox.Show("无法删除一个在线的设备！");
+            }
+            else
+            {
+                if (deviceId != "")
+                {
+                    // 获取设备列表
+                    Action<bool, byte[]> action = new Action<bool, byte[]>(DeleteDeviceList_Callback);
+                    ClassStatic.tcpClient.Send(238, ClassStatic.SetClientDataByte(new ClassStatic.ClientData(deviceId)), action);
+                }
+            }
+        }
+
+        private void DeleteDeviceList_Callback(bool state, byte[] data)
+        {
+            this.Invoke(new Action(() =>
+            {
+                FormMain.formMain.deviceList.InitializeDeviceList();
+            }));
+        }
     }
 }

@@ -60,7 +60,7 @@ namespace RemoteClipboard.MainForm
             this.labelTip.Name = "labelTip";
             this.labelTip.Size = new System.Drawing.Size(276, 40);
             this.labelTip.TabIndex = 15;
-            this.labelTip.Text = "手机QQ扫码绑定";
+            this.labelTip.Text = "手机QQ扫码解绑";
             this.labelTip.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pictureQRcode

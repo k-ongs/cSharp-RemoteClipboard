@@ -73,6 +73,16 @@ namespace RemoteClipboard.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap CursorColor {
+            get {
+                object obj = ResourceManager.GetObject("CursorColor", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap device {
             get {
                 object obj = ResourceManager.GetObject("device", resourceCulture);
@@ -86,6 +96,86 @@ namespace RemoteClipboard.Properties {
         internal static System.Drawing.Bitmap deviceType {
             get {
                 object obj = ResourceManager.GetObject("deviceType", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap draw_border {
+            get {
+                object obj = ResourceManager.GetObject("draw_border", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap draw_brush {
+            get {
+                object obj = ResourceManager.GetObject("draw_brush", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap draw_circular {
+            get {
+                object obj = ResourceManager.GetObject("draw_circular", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap draw_close {
+            get {
+                object obj = ResourceManager.GetObject("draw_close", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap draw_ponita {
+            get {
+                object obj = ResourceManager.GetObject("draw_ponita", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap draw_ponitb {
+            get {
+                object obj = ResourceManager.GetObject("draw_ponitb", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap draw_ponitcpng {
+            get {
+                object obj = ResourceManager.GetObject("draw_ponitcpng", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap draw_rectangle {
+            get {
+                object obj = ResourceManager.GetObject("draw_rectangle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

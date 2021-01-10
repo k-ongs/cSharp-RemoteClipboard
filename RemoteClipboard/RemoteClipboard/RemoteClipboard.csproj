@@ -58,6 +58,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -98,6 +99,12 @@
     <Compile Include="ControlSoftwareSetting.Designer.cs">
       <DependentUpon>ControlSoftwareSetting.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormColorSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormColorSelection.Designer.cs">
+      <DependentUpon>FormColorSelection.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormDownload.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +134,12 @@
     </Compile>
     <Compile Include="ControlPortraitBox.Designer.cs">
       <DependentUpon>ControlPortraitBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormScreenshot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormScreenshot.Designer.cs">
+      <DependentUpon>FormScreenshot.cs</DependentUpon>
     </Compile>
     <Compile Include="Login\UserControlLoading.cs">
       <SubType>UserControl</SubType>
@@ -207,6 +220,9 @@
     <EmbeddedResource Include="ControlSoftwareSetting.resx">
       <DependentUpon>ControlSoftwareSetting.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormColorSelection.resx">
+      <DependentUpon>FormColorSelection.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormDownload.resx">
       <DependentUpon>FormDownload.cs</DependentUpon>
     </EmbeddedResource>
@@ -221,6 +237,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPortraitBox.resx">
       <DependentUpon>ControlPortraitBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormScreenshot.resx">
+      <DependentUpon>FormScreenshot.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login\UserControlLoading.resx">
       <DependentUpon>UserControlLoading.cs</DependentUpon>
@@ -357,6 +376,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="RemoteClipboard.ico" />
+    <None Include="Resources\system\CursorColor.png" />
+    <None Include="Resources\system\draw\draw_rectangle.png" />
+    <None Include="Resources\system\draw\draw_ponitcpng.png" />
+    <None Include="Resources\system\draw\draw_ponitb.png" />
+    <None Include="Resources\system\draw\draw_ponita.png" />
+    <None Include="Resources\system\draw\draw_close.png" />
+    <None Include="Resources\system\draw\draw_circular.png" />
+    <None Include="Resources\system\draw\draw_brush.png" />
+    <None Include="Resources\system\draw\draw_border.png" />
     <None Include="Resources\system\loading.gif" />
     <None Include="Resources\system\RemoteClipboardRed.ico" />
     <None Include="Resources\system\qrcode.gif" />
