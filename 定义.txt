@@ -1,5 +1,5 @@
 短信发送API
-http://phone.xbear.vip/index.php?phone=15213138243&code=123456&time=5
+http://phone.xbear.vip/index.php?phone=手机号&code=123456&time=5
 
 100     获取手机号信息
 101     使用密码登录
